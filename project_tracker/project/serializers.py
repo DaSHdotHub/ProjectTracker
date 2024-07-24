@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Profile, Project, Task, Comment
 
+# *.Serializer class inhereting from ModelSerializer and has a Meta class with the model set to *. and the fields set to *.fields
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
