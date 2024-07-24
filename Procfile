@@ -1,2 +1,2 @@
 release: python manage.py collectstatic --noinput
-web: gunicorn planroute.wsgi
+web: gunicorn project_tracker.wsgi
