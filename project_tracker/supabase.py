@@ -1,4 +1,4 @@
-from project_tracker.project_tracker.supabase import create_client, Client
+from project_tracker.supabase import create_client, Client
 from decouple import config
 
 url: str = config("SUPABASE_URL")
