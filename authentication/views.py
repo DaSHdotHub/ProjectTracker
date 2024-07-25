@@ -90,23 +90,21 @@ def activate(request,uidb64,token):
 
     if myuser is not None and generate_token.check_token(myuser,token):
         myuser.is_active = True
-        # user.profile.signup_confirmation = True
         myuser.save()
         login(request,myuser)
         messages.success(request, "Your Account has been activated!!")
-        return redirect('signin')
+        return redirect('home')
     else:
         return render(request,'activation_failed.html')
     
 def signin(request):
     if request.method == "POST":
-        email = request.POST["email"]
-        pass1 = request.POST["pass1"]
-        user = authenticate(email=email, password=pass1)
+        username = request.POST["email"]
+        password = request.POST["pass1"]
+        user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            email = user.email
-            return render(request,"authentication/index.html", {'email' : email})
+            return redirect("home")
 
         else:
             messages.error(request, "Bad Credentials!")
