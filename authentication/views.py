@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import send_mail
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
+from django.utils.html import strip_tags
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from .custom_email_backend import CustomEmailBackend
@@ -36,38 +37,46 @@ def signup(request):
             return redirect('signup')
 
         # Create user object
-        myuser = User.objects.create_user(email, pass1)
+        myuser = User.objects.create_user(username = email, email = email, password = pass1)
         myuser.first_name = fname
         myuser.last_name = lname
         myuser.is_active = False # Disable account until email confirmation
         myuser.save()
 
         # Welcome Email
-        subject = "Welcome to ProjectTracker - Login!!"
-        message = "Hello " + myuser.first_name + "!! \n" + "Welcome to ProjectTracker!! \nThank you for visiting our website\n. We have also sent you a confirmation email, please confirm your email address. \n\nThanking You\n Daniil"        
+        welcome_subject = "Welcome to ProjectTracker - Login!!"
+        welcome_message = "Hello " + myuser.first_name + "!! \n" + "Welcome to ProjectTracker. \nThank you for visiting our website. \n"+"We have also sent you a confirmation email, please confirm your email address. \n\n"+"Thanking You\n"+"Daniil"        
         from_email = settings.EMAIL_HOST_USER
         to_list = [myuser.email]
-        send_mail(subject, message, from_email, to_list, fail_silently=True)
+        send_mail(
+            subject = welcome_subject, 
+            message = welcome_message, 
+            from_email = from_email, 
+            recipient_list = to_list, 
+            fail_silently=True,
+            connection = CustomEmailBackend(),
+        )
         
-        # Email Address Confirmation Email
+        # Email Address Confirmation Email with HTML template
         current_site = get_current_site(request)
-        email_subject = "Confirm your Email @ ProjectTracker - Django Login!!"
+        confirmation_subject = "Confirm your Email @ ProjectTracker - Django Login!!"
         uid = urlsafe_base64_encode(force_bytes(myuser.pk))
         token = generate_token.make_token(myuser) 
         confirmation_url = f"http://{current_site.domain}{reverse('activate', kwargs={'uidb64': uid, 'token': token})}"
-        message2 = render_to_string('email_confirmation.html',{     
+        confirmation_message = render_to_string('email_confirmation.html',{     
             'name': myuser.first_name,
             'confirmation_url': confirmation_url
         })
-        email = EmailMessage(
-        email_subject,
-        message2,
-        settings.EMAIL_HOST_USER,
-        [myuser.email],
+        plain_message = strip_tags(confirmation_message)
+        send_mail(
+            subject = confirmation_subject,
+            message = plain_message,
+            html_message = confirmation_message,
+            from_email = from_email,
+            recipient_list = to_list,
+            fail_silently = True,
+            connection = CustomEmailBackend(),
         )
-        email.connection = CustomEmailBackend()
-        email.send(fail_silently=False)
-        
         return redirect('signin')
     
     return render(request, "authentication/signup.html")
