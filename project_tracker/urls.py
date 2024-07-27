@@ -16,9 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from project import views as project_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('project.urls')),
+    path('dashboard/', project_views.dashboard, name='dashboard'),
+    path('create-project/', project_views.create_project, name='create_project'),
+    path('edit-project/<int:project_id>/', project_views.edit_project, name='edit_project'),
     path('', include('authentication.urls')),
 ]
