@@ -33,6 +33,9 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_state_display(self):
+        return dict(self.STATUS_CHOICES)[self.state]
 
 # Task model with data fields for title, description, due_date, status, and project
 class Task(models.Model):
