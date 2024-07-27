@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e8f5e9;
+            /* Light mint color */
+        }
+
+        .column {
+            border-radius: 15px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin: 15px 0;
+            cursor: pointer;
+        }
+
+        .project-count {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-switch {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .project-grid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .project-card {
+            flex: 0 0 30%;
+            /* About 1/3 width */
+            margin: 1%;
+            border-radius: 15px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .project-table th,
+        .project-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .project-table th {
+            background-color: #f2f2f2;
+        }
+
+        .comments-section {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .comment-card {
+            border-radius: 15px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .create-project-icon {
+            position: relative;
+            font-size: 2rem;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+    </style>
+</head>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left Column, Miscellaneous Icons --> 
+        <div class="col-md-1 column text-center">
+            <img src="profile.jpg" alt="Profile Picture" class="profile-pic">
+            <div class="icon">&#x1F4C8;</div> <!-- Dashboard Icon -->
+            <div class="icon">&#x1F511;</div> <!-- Logout Icon -->
+        </div>
+
+        <!-- Middle Column, Projects and Modal -->
+        <div class="col-md-8 column">
+            <div class="project-count">
+                <div>
+                    <h2>Your Projects</h2>
+                    <p>In Progress: <span id="in-progress-count">{{ in_progress_count }}</span></p>
+                    <p>Drafts: <span id="drafts-count">{{ drafts_count }}</span></p>
+                    <p>Total: <span id="total-count">{{ total_count }}</span></p>
+                </div>
+                <div class="toggle-switch">
+                    <a href="{% url 'create_project' %}">
+                        <span class="create-project-icon">&#x2795;</span></a>
+                    <span id="current-date"></span>
+                    <div class="custom-control custom-switch ml-3">
+                        <input type="checkbox" class="custom-control-input" id="viewSwitch">
+                        <label class="custom-control-label" for="viewSwitch">Toggle View</label>
+                    </div>
+                </div>
+            </div>
+            <div id="projects-container" class="project-grid">
+                {% for project in projects %}
+                <div class="project-card">
+                    <div class="row">
+                        <div class="col">
+                            <a href="{% url 'edit_project' project.id %}">
+                                <h5>{{project.title}}</h5>
+                            </a>
+                        </div>
+                    </div>
+                    <p>{{ project.description }}</p>
+                    <p>Status: {{ project.get_state_display }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <table id="projects-table" class="project-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td>{{ project.title }}</td>
+                        <td>{{ project.description }}</td>
+                        <td>{{ project.get_status_display }}</td>
+                        <td><a href="{% url 'edit_project' project.id %}" class="edit-icon">&#x270E;</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- Modal -->
+        <div id="projectModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modal-body-content">
+                    <!-- Form content will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column, Comment section -->
+        <div class="col-md-3 column comments-section">
+            <h4>Comments</h4>
+            <div class="comment-card">
+                <p><strong>User:</strong> Comment content...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Display current date
+    document.getElementById('current-date').textContent = new Date().toLocaleDateString();
+
+    // Toggle between grid and table view
+    document.getElementById('viewSwitch').addEventListener('change', function () {
+        const isChecked = this.checked;
+        document.getElementById('projects-container').style.display = isChecked ? 'none' : 'flex';
+        document.getElementById('projects-table').style.display = isChecked ? 'table' : 'none';
+    });
+</script>
+</body>
+
+</html>
+
+<body>
