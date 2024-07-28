@@ -1,0 +1,51 @@
+{% extends "project/dashboard.html" %}
+
+{% block title %}Project List{% endblock %}
+
+{% block middle_column %}
+<div class="project-count">
+    <div>
+        <h2>Your Projects</h2>
+        <p>In Progress: <span id="in-progress-count">{{ in_progress_count }}</span></p>
+        <p>Drafts: <span id="drafts-count">{{ drafts_count }}</span></p>
+        <p>Total: <span id="total-count">{{ total_count }}</span></p>
+    </div>
+    <div class="toggle-switch">
+        <a href="{% url 'create_project' %}" class="create-project-icon">+</a>
+        <span id="current-date"></span>
+        <div class="custom-control custom-switch ml-3">
+            <input type="checkbox" class="custom-control-input" id="viewSwitch">
+            <label class="custom-control-label" for="viewSwitch">Toggle View</label>
+        </div>
+    </div>
+</div>
+<div id="projects-container" class="project-grid">
+    {% for project in projects %}
+    <div class="project-card">
+        <a href="{% url 'edit_project' project.id %}">
+            <h5>{{ project.title }}</h5>
+        </a>
+        <p>{{ project.description }}</p>
+        <p>Status: {{ project.get_state_display }}</p>
+    </div>
+    {% endfor %}
+</div>
+<table id="projects-table" class="project-table" style="display: none;">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in projects %}
+        <tr>
+            <td><a href="{% url 'edit_project' project.id %}">{{ project.title }}</a></td>
+            <td>{{ project.description }}</td>
+            <td>{{ project.get_state_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
