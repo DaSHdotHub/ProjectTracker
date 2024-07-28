@@ -13,12 +13,12 @@ class Profile(models.Model):
 # Project model with data fields for title, description, creation_date, due_date, state, owner, and is_public
 class Project(models.Model):
     DRAFT = 'D'
-    ONGOING = 'O'
+    IN_PROGRESS = 'I'
     COMPLETED = 'C'
     CANCELLED = 'X'
     STATUS_CHOICES = [
         (DRAFT, 'Draft'),
-        (ONGOING, 'Ongoing'),
+        (IN_PROGRESS, 'In Progress'),
         (COMPLETED, 'Completed'),
         (CANCELLED, 'Cancelled'),
     ]
