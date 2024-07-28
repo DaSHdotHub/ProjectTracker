@@ -12,6 +12,14 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ['title', 'description', 'due_date', 'state', 'is_public']
+    
+    # Override the __init__ method to limit the 'state' field choices
+    def __init__(self, *args, **kwargs):
+        super(ProjectForm, self).__init__(*args, **kwargs)
+        self.fields['state'].choices = [
+            ('Project.DRAFT', 'Draft'),
+            ('Project.IN_PROGRESS', 'In Progress')
+        ]
         
 TaskFormSet = inlineformset_factory(Project, Task, fields=['title', 'description', 'due_date', 'status'], extra=1)
 
