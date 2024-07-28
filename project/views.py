@@ -42,7 +42,7 @@ def dashboard(request):
         "drafts_count": drafts_count,
         "total_count": total_count,
     }
-    return render(request, "project/dashboard_project_list.html", context)
+    return render(request, "project/project_list.html", context)
 
 @login_required
 def create_project(request):
@@ -52,10 +52,10 @@ def create_project(request):
             project = form.save(commit=False)
             project.owner = request.user
             project.save()
-            return redirect('dashboard_project_list.html')
+            return redirect('../dashboard/')
     else:
         form = ProjectForm()        
-    return render(request, "project/dashboard_project_create.html", {'form': form})
+    return render(request, "project/project_create.html", {'form': form})
 
 @login_required
 def edit_project(request, project_id):
@@ -66,7 +66,7 @@ def edit_project(request, project_id):
         if form.is_valid() and task_formset.is_valid():
             form.save()
             task_formset.save()
-            return redirect('dashboard')
+            return redirect('../dashboard')
     else:
         form = ProjectForm(instance=project)
         task_formset = TaskFormSet(instance=project)
