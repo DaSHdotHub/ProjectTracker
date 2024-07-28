@@ -1,0 +1,55 @@
+{% extends "project/dashboard.html" %}
+
+{% block title %}Project Create{% endblock %}
+
+{% block middle_column %}
+<div class="container">
+    <h2>Create New Project</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Create Project</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize datepicker
+    $(document).ready(function() {
+        $('#id_due_date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        // Restrict input to numbers only
+        $('#id_due_date').on('keypress', function(event) {
+            const charCode = event.charCode;
+            if ((charCode >= 48 && charCode <= 57) || charCode === 45) {
+                // Allow numbers (0-9) and '-'
+                return true;
+            } else {
+                // Prevent other characters
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        // Limit input to numbers only
+        $('id_due_date').on('input', function() {
+            this.value = this.value.replace(/[^0-9\-]/g, '');
+        });
+
+        // Prevent past dates
+        $('#id_due_date').on('change', function() {
+            const selectedDate = new Date(this.value);
+            const currentDate = new Date();
+            if (selectedDate < currentDate) {
+                alert('Please select a future date');
+                this.value = '';
+            }
+        });
+    });
+</script>
+{% endblock %}
