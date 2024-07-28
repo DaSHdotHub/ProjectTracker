@@ -17,9 +17,8 @@ class ProjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)
         self.fields['state'].choices = [
-            ('Project.DRAFT', 'Draft'),
-            ('Project.IN_PROGRESS', 'In Progress')
-        ]
+            (Project.DRAFT, 'Draft'),
+            (Project.IN_PROGRESS, 'In Progress')        ]
         
 TaskFormSet = inlineformset_factory(Project, Task, fields=['title', 'description', 'due_date', 'status'], extra=1)
 
