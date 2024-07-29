@@ -60,14 +60,28 @@ def create_project(request):
 @login_required
 def edit_project(request, project_id):
     project = get_object_or_404(Project, id=project_id, owner=request.user)
+    tasks = project.tasks.all()
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
-        task_formset = TaskFormSet(request.POST, instance=project)
-        if form.is_valid() and task_formset.is_valid():
+        task_form = TaskForm(request.POST)
+        if 'save_project' in request.POST and form.is_valid():
             form.save()
-            task_formset.save()
-            return redirect('../dashboard')
+            return redirect('edit_project', project_id=project.id)
+        elif 'save_task' in request.POST and task_form.is_valid():
+            new_task = task_form.save(commit=False)
+            new_task.project = project
+            new_task.save()
+            return redirect('edit_project', project_id=project.id)
     else:
         form = ProjectForm(instance=project)
-        task_formset = TaskFormSet(instance=project)
-    return render(request, 'project/edit_project.html', {'form': form, 'task_formset': task_formset})
+        task_form = TaskForm()
+        
+    context = {
+        'project': project,
+        'form': form,
+        'task_form': task_form,
+        'tasks': tasks,
+        'is_owner': request.user == project.owner,
+        'has_tasks': tasks.exists(),
+    }
+    return render(request, 'project/edit_project.html', context)
