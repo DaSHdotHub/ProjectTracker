@@ -1,67 +1,233 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "project/dashboard.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Project</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
-        rel="stylesheet">
-    <style>
-        body {
-            background-color: #e8f5e9;
-            /* Light mint color */
-        }
+{% block styles %}
+<style>
+    .btn-primary {
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+    }
 
-        .container {
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-top: 20px;
-        }
+    .btn-secondary {
+        background-color: #ce5900;
+        border: none;
+        border-radius: 5px;
+        margin-left: 10px;
+    }
 
-        .btn-primary {
-            background-color: #4CAF50;
-            border: none;
-            border-radius: 5px;
-        }
+    .btn-secondary:hover {
+        background-color: #ac4b01;
+    }
 
-        .btn-primary:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
+    .btn-primary:hover {
+        background-color: #45a049;
+    }
 
-<body>
-    <div class="container">
-        <h2>Edit Project</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <h3>Tasks</h3>
-            {{ task_formset.management_form }}
-            {% for form in task_formset %}
-            {{ form.as_p }}
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-        </form>
+    .task-card {
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        padding: 10px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-edit {
+        float: right;
+        margin-right: 5px;
+        height: 40px;
+    }
+
+    .btn-back {
+        float: right;
+        height: 40px;
+    }
+
+    .form-control[disabled],
+    .form-control[readonly],
+    fieldset[disabled] .form-control {
+        background-color: #e9ecef;
+        opacity: 1;
+    }
+</style>
+{% endblock %}
+
+{% block title %}Edit Project{% endblock %}
+
+{% block middle_column %}
+<h2>Edit Project</h2>
+{% if is_owner %}
+<a id="go-to-dashboard-button" class="btn btn-secondary btn-back nav-link" href="/dashboard">Go to Dashboard</a>
+<button id="edit-button" class="btn btn-primary btn-edit">Edit</button>
+{% else %}
+{% endif %}
+<form method="post" id="project-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button name="save_project" type="submit" class="btn btn-primary" id="save-button" style="display:none;">Save
+        Changes</button>
+    <button type="button" class="btn btn-secondary" id="cancel-edit-button" style="display:none;">Cancel</button>
+</form>
+
+<h3>Tasks</h3>
+{% if not has_tasks %}
+<p>No tasks created for this project.</p>
+{% else %}
+
+{% if is_owner %}
+<button id="add-task" class="btn btn-primary mb-3" style="display:none;">Add New Task</button>
+<div id="task-form-container" style="display:none;">
+    <form method="post" id="task-form">
+        {% csrf_token %}
+        {{ task_form.as_p }}
+        <button name="save_task" type="submit" class="btn btn-primary" id="save-task-button">Save Task</button>
+        <button type="button" class="btn btn-secondary" id="cancel-task-button">Cancel</button>
+    </form>
+</div>
+{% endif %}
+
+<div id="tasks-container">
+    {% for task in tasks %}
+    <div class="task-card">
+        <h4>{{ task.title }}</h4>
+        <p>{{ task.description }}</p>
+        <p>Due date: {{ task.due_date }}</p>
+        <p>Status: {{ task.get_status_display }}</p>
+        <div class="task-actions" style="display:none;">
+            {% if task.status == 'T' or task.status == 'I' %}
+            <button class="btn btn-success change-status" data-task-id="{{ task.id }}" data-new-status="D">Mark as
+                Done</button>
+            {% endif %}
+            {% if task.status == 'T' or task.status == 'D' %}
+            <button class="btn btn-info change-status" data-task-id="{{ task.id }}" data-new-status="I">Mark as In
+                Progress</button>
+            {% endif %}
+            <button class="btn btn-danger delete-task" data-task-id="{{ task.id }}">Delete</button>
+        </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#id_due_date').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true,
-                todayHighlight: true
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        // Initialize datepickers for project due dates
+        $('#id_due_date, #id_task_due_date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        // Validate due date input to be only numbers and hyphens
+        $('#id_due_date, #id_task_due_date').on('keypress', function (event) {
+            const charCode = event.charCode;
+            if ((charCode >= 48 && charCode <= 57) || charCode === 45) {
+                return true;
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        // Pasted text validation for due date input
+        $('#id_due_date, #id_task_due_date').on('input', function () {
+            this.value = this.value.replace(/[^0-9\-]/g, '');
+        });
+
+        // Prevent past dates from being selected
+        $('#id_due_date, #id_task_due_date').on('change', function () {
+            const selectedDate = new Date(this.value);
+            const currentDate = new Date();
+            if (selectedDate < currentDate) {
+                alert('Please select a future date');
+                this.value = '';
+            }
+        });
+
+        // Disable form fields on page load
+        $('#project-form input, #project-form select, #project-form textarea').prop('disabled', true);
+
+        // Enable form fields on edit button click
+        $('#edit-button').click(function () {
+            $('#project-form input, #project-form select, #project-form textarea').prop('disabled', false);
+            $('#edit-button').hide();
+            $('#go-to-dashboard-button').hide();
+            $('#save-button').show();
+            $('#add-task').show();
+            $('#cancel-edit-button').show();
+            $('.task-actions').show();
+        });
+
+        // Show task form on 'add task button' click
+        $('#add-task').click(function () {
+            $('#task-form-container').show();
+            $('#save-button').hide();
+            $('#add-task').hide();
+            $('#project-form input, #project-form select, #project-form textarea').prop('disabled', true);
+            $('.task-actions').hide();
+            $('#cancel-edit-button').hide();
+
+        });
+
+        // Cancel editing project
+        $('#cancel-edit-button').click(function () {
+            $('#project-form')[0].reset();
+            $('#project-form input, #project-form select, #project-form textarea').prop('disabled', true);
+            $('#edit-button').show();
+            $('#save-button').hide();
+            $('#cancel-edit-button').hide();
+            $('#add-task').hide();
+            $('#task-form-container').hide();
+            $('.task-actions').hide();
+        });
+
+        // Cancel adding task
+        $('#cancel-task-button').click(function () {
+            $('#task-form')[0].reset();
+            $('#task-form-container').hide();
+            $('#edit-button').show();
+        });
+
+        // Change task status
+        $('.change-status').click(function () {
+            const taskId = $(this).data('task-id');
+            const newStatus = $(this).data('new-status');
+            $.ajax({
+                type: 'POST',
+                url: `{% url 'change_task_status' %}`,
+                data: {
+                    'task_id': taskId,
+                    'new_status': newStatus,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    alert('There was an error changing the task status.');
+                }
             });
         });
-    </script>
-</body>
 
-</html>
+        // Delete task
+        $('.delete-task').click(function () {
+            const taskId = $(this).data('task-id');
+            $.ajax({
+                type: 'POST',
+                url: `{% url 'delete_task' %}`,
+                data: {
+                    'task_id': taskId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    alert('There was an error deleting the task.');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
