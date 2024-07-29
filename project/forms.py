@@ -20,5 +20,13 @@ class ProjectForm(forms.ModelForm):
             (Project.DRAFT, 'Draft'),
             (Project.IN_PROGRESS, 'In Progress')        ]
         
-TaskFormSet = inlineformset_factory(Project, Task, fields=['title', 'description', 'due_date', 'status'], extra=1)
+class TaskForm(forms.ModelForm):
+    due_date = forms.DateField(
+        widget=forms.TextInput(
+            attrs={'type': 'text', 'class': 'form-control', 'id': 'id_task_due_date'}
+        )
+    )
 
+    class Meta:
+        model = Task
+        fields = ['title', 'description', 'due_date', 'status']        
