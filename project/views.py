@@ -50,7 +50,7 @@ def dashboard(request):
 @login_required
 def create_project(request):
     if request.method == "POST":
-        form = ProjectForm(request.POST)
+        form = ProjectForm(request.POST, edit_mode=False)
         if form.is_valid():
             project = form.save(commit=False)
             project.owner = request.user
@@ -68,7 +68,7 @@ def edit_project(request, project_id):
         action = request.POST.get('action')
 
         if action == 'edit_project':
-            form = ProjectForm(request.POST, instance=project)
+            form = ProjectForm(request.POST, instance=project, edit_mode=True)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Project updated successfully.')
@@ -87,7 +87,7 @@ def edit_project(request, project_id):
             else:
                 messages.error(request, 'There was an error adding the task.')
     else:
-        form = ProjectForm(instance=project)
+        form = ProjectForm(instance=project, edit_mode = True)
         task_form = TaskForm()
         
     context = {

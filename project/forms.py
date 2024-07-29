@@ -15,10 +15,15 @@ class ProjectForm(forms.ModelForm):
     
     # Override the __init__ method to limit the 'state' field choices
     def __init__(self, *args, **kwargs):
+        edit_mode = kwargs.pop('edit_mode', False)
         super(ProjectForm, self).__init__(*args, **kwargs)
-        self.fields['state'].choices = [
-            (Project.DRAFT, 'Draft'),
-            (Project.IN_PROGRESS, 'In Progress')        ]
+        if not edit_mode:
+            self.fields['state'].choices = [
+                (Project.DRAFT, 'Draft'),
+                (Project.IN_PROGRESS, 'In Progress')
+                ]
+        else:
+            self.fields['state'].choices = Project.STATUS_CHOICES
         
 class TaskForm(forms.ModelForm):
     due_date = forms.DateField(
