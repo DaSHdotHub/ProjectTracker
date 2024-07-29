@@ -2,25 +2,30 @@
 
 {% block styles %}
 <style>
-    .btn-primary {
-        background-color: #4CAF50;
-        border: none;
-        border-radius: 5px;
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
     }
 
-    .btn-secondary {
-        background-color: #ce5900;
-        border: none;
-        border-radius: 5px;
-        margin-left: 10px;
+    .form-title {
+        text-align: center;
+        margin-bottom: 30px;
     }
 
-    .btn-secondary:hover {
-        background-color: #ac4b01;
+    .form-group label {
+        font-weight: bold;
     }
 
-    .btn-primary:hover {
-        background-color: #45a049;
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        border-radius: 10px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        box-shadow: none;
     }
 
     .task-card {
@@ -33,13 +38,17 @@
 
     .btn-edit {
         float: right;
-        margin-right: 5px;
-        height: 40px;
     }
 
-    .btn-back {
-        float: right;
-        height: 40px;
+    .btn-primary,
+    .btn-secondary {
+        border-radius: 10px;
+        width: 100%;
+    }
+
+    .task-actions .btn {
+        width: auto;
+        margin-top: 5px;
     }
 
     .form-control[disabled],
@@ -54,88 +63,98 @@
 {% block title %}Edit Project{% endblock %}
 
 {% block middle_column %}
-<h2>Edit Project</h2>
-{% if is_owner %}
-<a id="go-to-dashboard-button" class="btn btn-secondary btn-back nav-link" href="/dashboard">Go to Dashboard</a>
-<button id="edit-button" class="btn btn-primary btn-edit">Edit</button>
-{% else %}
-{% endif %}
-<form method="post" id="project-form">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button name="save_project" type="submit" class="btn btn-primary" id="save-button" style="display:none;">Save
-        Changes</button>
-    <button type="button" class="btn btn-secondary" id="cancel-edit-button" style="display:none;">Cancel</button>
-</form>
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    <strong>Message:</strong> {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %}
 
-<h3>Tasks</h3>
-{% if not has_tasks %}
-<p>No tasks created for this project.</p>
-{% else %}
-
-{% if is_owner %}
-<button id="add-task" class="btn btn-primary mb-3" style="display:none;">Add New Task</button>
-<div id="task-form-container" style="display:none;">
-    <form method="post" id="task-form">
+<div class="container">
+    <h3 class="form-title">Edit Project</h3>
+    {% if is_owner %}
+    <a id="go-to-dashboard-button" class="btn btn-secondary btn-back nav-link mb-3" href="/dashboard">Go to
+        Dashboard</a>
+    <button id="edit-button" class="btn btn-primary btn-edit mb-3">Edit</button>
+    {% endif %}
+    <form method="post" id="project-form">
         {% csrf_token %}
-        {{ task_form.as_p }}
-        <button name="save_task" type="submit" class="btn btn-primary" id="save-task-button">Save Task</button>
-        <button type="button" class="btn btn-secondary" id="cancel-task-button">Cancel</button>
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary" id="save-button" style="display:none;">Save Changes</button>
+        <button type="button" class="btn btn-secondary" id="cancel-edit-button" style="display:none;">Cancel</button>
     </form>
-</div>
-{% endif %}
 
-<div id="tasks-container">
-    {% for task in tasks %}
-    <div class="task-card">
-        <h4>{{ task.title }}</h4>
-        <p>{{ task.description }}</p>
-        <p>Due date: {{ task.due_date }}</p>
-        <p>Status: {{ task.get_status_display }}</p>
-        <div class="task-actions" style="display:none;">
-            {% if task.status == 'T' or task.status == 'I' %}
-            <button class="btn btn-success change-status" data-task-id="{{ task.id }}" data-new-status="D">Mark as
-                Done</button>
-            {% endif %}
-            {% if task.status == 'T' or task.status == 'D' %}
-            <button class="btn btn-info change-status" data-task-id="{{ task.id }}" data-new-status="I">Mark as In
-                Progress</button>
-            {% endif %}
-            <button class="btn btn-danger delete-task" data-task-id="{{ task.id }}">Delete</button>
-        </div>
+    <h3 class="mt-4">Tasks</h3>
+    {% if not has_tasks %}
+    <p>No tasks created for this project.</p>
+    {% else %}
+    {% if is_owner %}
+    <button id="add-task" class="btn btn-primary mb-3" style="display:none;">Add New Task</button>
+    <div id="task-form-container" style="display:none;">
+        <form method="post" id="task-form">
+            {% csrf_token %}
+            {{ task_form.as_p }}
+            <button type="submit" class="btn btn-primary">Save Task</button>
+            <button type="button" class="btn btn-secondary" id="cancel-task-button">Cancel</button>
+        </form>
     </div>
-    {% endfor %}
+    {% endif %}
+    <div id="tasks-container">
+        {% for task in tasks %}
+        <div class="task-card">
+            <h4>{{ task.title }}</h4>
+            <p>{{ task.description }}</p>
+            <p>Due date: {{ task.due_date|date:"Y-m-d" }}</p>
+            <p>Status: {{ task.get_status_display }}</p>
+            <div class="task-actions" style="display:none;">
+                {% if task.status == 'T' or task.status == 'I' %}
+                <button class="btn btn-success change-status" data-task-id="{{ task.id }}" data-new-status="D">Mark as
+                    Done</button>
+                {% endif %}
+                {% if task.status == 'T' or task.status == 'D' %}
+                <button class="btn btn-info change-status" data-task-id="{{ task.id }}" data-new-status="I">Mark as In
+                    Progress</button>
+                {% endif %}
+                <button class="btn btn-danger delete-task" data-task-id="{{ task.id }}">Delete</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
-{% endif %}
 {% endblock %}
 
 {% block extra_js %}
 <script>
     $(document).ready(function () {
-        // Initialize datepickers for project due dates
+        // Initialize datepickers for project and task due dates
         $('#id_due_date, #id_task_due_date').datepicker({
             format: 'yyyy-mm-dd',
             autoclose: true,
             todayHighlight: true
         });
 
-        // Validate due date input to be only numbers and hyphens
+        // Restrict input to numbers only for project and task due dates
         $('#id_due_date, #id_task_due_date').on('keypress', function (event) {
             const charCode = event.charCode;
             if ((charCode >= 48 && charCode <= 57) || charCode === 45) {
+                // Allow numbers (0-9) and '-'
                 return true;
             } else {
+                // Prevent other characters
                 event.preventDefault();
                 return false;
             }
         });
 
-        // Pasted text validation for due date input
+        // Limit input to numbers only for project and task due dates
         $('#id_due_date, #id_task_due_date').on('input', function () {
             this.value = this.value.replace(/[^0-9\-]/g, '');
         });
 
-        // Prevent past dates from being selected
+        // Prevent past dates for project and task due dates
         $('#id_due_date, #id_task_due_date').on('change', function () {
             const selectedDate = new Date(this.value);
             const currentDate = new Date();
@@ -145,10 +164,10 @@
             }
         });
 
-        // Disable form fields on page load
+        // Initially disable all form fields
         $('#project-form input, #project-form select, #project-form textarea').prop('disabled', true);
 
-        // Enable form fields on edit button click
+        // Toggle edit mode
         $('#edit-button').click(function () {
             $('#project-form input, #project-form select, #project-form textarea').prop('disabled', false);
             $('#edit-button').hide();
