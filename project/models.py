@@ -25,8 +25,8 @@ class Project(models.Model):
 
     title = models.CharField(max_length=255)
     description = models.TextField()
-    creation_date = models.DateTimeField(auto_now_add=True)
-    due_date = models.DateTimeField()
+    creation_date = models.DateField(auto_now_add=True)
+    due_date = models.DateField()
     state = models.CharField(max_length=1, choices=STATUS_CHOICES, default=DRAFT)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     is_public = models.BooleanField(default=False)
