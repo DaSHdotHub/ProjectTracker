@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from .forms import ProjectForm, TaskForm
@@ -64,16 +65,27 @@ def edit_project(request, project_id):
     project = get_object_or_404(Project, id=project_id, owner=request.user)
     tasks = project.tasks.all()
     if request.method == 'POST':
-        form = ProjectForm(request.POST, instance=project)
-        task_form = TaskForm(request.POST)
-        if 'save_project' in request.POST and form.is_valid():
-            form.save()
-            return redirect('edit_project', project_id=project.id)
-        elif 'save_task' in request.POST and task_form.is_valid():
-            new_task = task_form.save(commit=False)
-            new_task.project = project
-            new_task.save()
-            return redirect('edit_project', project_id=project.id)
+        action = request.POST.get('action')
+
+        if action == 'edit_project':
+            form = ProjectForm(request.POST, instance=project)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Project updated successfully.')
+                return redirect('edit_project', project_id=project.id)
+            else:
+                messages.error(request, 'There was an error updating the project.')
+        
+        elif action == 'add_task':
+            task_form = TaskForm(request.POST)
+            if task_form.is_valid():
+                new_task = task_form.save(commit=False)
+                new_task.project = project
+                new_task.save()
+                messages.success(request, 'Task added successfully.')
+                return redirect('edit_project', project_id=project.id)
+            else:
+                messages.error(request, 'There was an error adding the task.')
     else:
         form = ProjectForm(instance=project)
         task_form = TaskForm()
