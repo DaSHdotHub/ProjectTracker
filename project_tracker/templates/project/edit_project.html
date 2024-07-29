@@ -60,6 +60,10 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
+    .btn {
+        border: none;
+    }
+
     .btn-edit {
         float: right;
     }
@@ -81,6 +85,15 @@
         background-color: #e9ecef;
         opacity: 1;
     }
+
+    .cancel {
+        background-color: #f26500;
+    }
+
+    .cancel:hover {
+        background-color: #b64c00;
+    }
+    
 </style>
 {% endblock %}
 
@@ -97,7 +110,7 @@
 <div class="container">
     <h3 class="form-title">Details of "{{ project.title }}"</h3>
     {% if is_owner %}
-    <a id="go-to-dashboard-button" class="btn btn-secondary btn-back nav-link mb-3" href="/dashboard">Go to
+    <a id="go-to-dashboard-button" class="btn btn-secondary btn-back nav-link mb-3 cancel" href="/dashboard">Go to
         Dashboard</a>
     <button id="edit-button" class="btn btn-primary btn-edit mb-3">Edit</button>
     {% endif %}
@@ -125,7 +138,7 @@
         </div>
         <button type="submit" name="action" value="edit_project" class="btn btn-primary btn-save-change"
             id="save-button" style="display:none;">Save Changes</button>
-        <button type="button" class="btn btn-secondary" id="cancel-edit-button" style="display:none;">Cancel</button>
+        <button type="button" class="btn btn-secondary cancel" id="cancel-edit-button" style="display:none;">Cancel</button>
     </form>
 
     <h3 class="mt-4" id="task_name">Tasks</h3>
@@ -152,7 +165,7 @@
             </div>
             <button type="submit" name="action" value="add_task" class="btn btn-primary btn-save-task">Save
                 Task</button>
-            <button type="button" class="btn btn-secondary" id="cancel-task-button">Cancel</button>
+            <button type="button" class="btn btn-secondary cancel" id="cancel-task-button">Cancel</button>
         </form>
     </div>
     {% endif %}
@@ -267,6 +280,7 @@
             $('#task-form-container').hide();
             $('#edit-button').show();
             $('#task_name').text('Tasks');
+            $('#go-to-dashboard-button').show();
         });
 
         // Save adding task
