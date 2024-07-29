@@ -1,7 +1,9 @@
 from rest_framework import viewsets
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import ProjectForm, TaskFormSet
+from django.views.decorators.csrf import csrf_exempt
+from .forms import ProjectForm, TaskForm
 from .models import Profile, Project, Task, Comment
 from .serializers import ProfileSerializer, ProjectSerializer, TaskSerializer, CommentSerializer
 
@@ -85,3 +87,23 @@ def edit_project(request, project_id):
         'has_tasks': tasks.exists(),
     }
     return render(request, 'project/edit_project.html', context)
+
+@login_required
+@csrf_exempt
+def change_task_status(request):
+    if request.method == 'POST':
+        task_id = request.POST.get('task_id')
+        new_status = request.POST.get('new_status')
+        task = get_object_or_404(Task, id=task_id, project__owner=request.user)
+        task.status = new_status
+        task.save()
+        return JsonResponse({'success': True})
+
+@login_required
+@csrf_exempt
+def delete_task(request):
+    if request.method == 'POST':
+        task_id = request.POST.get('task_id')
+        task = get_object_or_404(Task, id=task_id, project__owner=request.user)
+        task.delete()
+        return JsonResponse({'success': True})

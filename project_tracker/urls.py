@@ -24,5 +24,7 @@ urlpatterns = [
     path('dashboard/', project_views.dashboard, name='dashboard'),
     path('create-project/', project_views.create_project, name='create_project'),
     path('edit-project/<int:project_id>/', project_views.edit_project, name='edit_project'),
+    path('change-task-status/', project_views.change_task_status, name='change_task_status'),
+    path('delete-task/', project_views.delete_task, name='delete_task'),
     path('', include('authentication.urls')),
 ]
