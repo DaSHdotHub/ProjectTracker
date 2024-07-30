@@ -110,7 +110,7 @@
 <div class="container">
     <h3 class="form-title">Details of "{{ project.title }}"</h3>
     {% if is_owner %}
-    <a id="go-to-dashboard-button" class="btn btn-secondary btn-back nav-link mb-3 cancel" href="/dashboard">Go to
+    <a id="go-to-dashboard-button" class="btn btn-secondary btn-back nav-link mb-3 cancel" href="{{ dashboard_url }}">Go to
         Dashboard</a>
     <button id="edit-button" class="btn btn-primary btn-edit mb-3">Edit</button>
     {% endif %}

@@ -50,7 +50,7 @@
     
     {% if user.is_authenticated %}
     <center><h3>Hello {{ username }}! Welcome to ProjectTracker!</h3></center> 
-    <button type= "submit" class="btn btn-primary btn-sm"><a href="/dashboard">Go to Dashboard</a></button>
+    <button type= "submit" class="btn btn-primary btn-sm"><a href="{%url 'dashboard' %}">Go to Dashboard</a></button>
     {% else %}
     <center><h3>Welcome to ProjectTracker!</h3></center>
     {% endif %}
