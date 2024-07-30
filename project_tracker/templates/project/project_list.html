@@ -53,11 +53,11 @@
                 data-toggle="tooltip" 
                 data-placement="top"
                 title="{{ project.title }}">
-                {{ project.title|truncate_chars:50 }}</a></td>
+                {{ project.title|truncate_chars:30 }}</a></td>
             <td data-toggle="tooltip"
                 data-placement="top" 
                 title="{{ project.description }}">
-                {{ project.description|truncate_chars:150 }}
+                {{ project.description|truncate_chars:30 }}
             </td>
             <td>{{ project.get_state_display }}</td>
         </tr>

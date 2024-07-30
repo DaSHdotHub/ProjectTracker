@@ -64,10 +64,6 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .btn {
-        border: none;
-    }
-
     .btn-edit {
         float: right;
     }
@@ -88,14 +84,6 @@
     fieldset[disabled] .form-control {
         background-color: #e9ecef;
         opacity: 1;
-    }
-
-    .cancel {
-        background-color: #f26500;
-    }
-
-    .cancel:hover {
-        background-color: #b64c00;
     }
 </style>
 {% endblock %}
@@ -145,7 +133,7 @@
         </div>
         <button type="submit" name="action" value="project_edit" class="btn btn-primary btn-save-change"
             id="save-button" style="display:none;">Save Changes</button>
-        <button type="button" class="btn btn-secondary cancel" id="cancel-edit-button"
+        <button type="button" class="btn btn-primary cancel" id="cancel-edit-button"
             style="display:none;">Cancel</button>
     </form>
 
@@ -173,7 +161,7 @@
             </div>
             <button type="submit" name="action" value="add_task" class="btn btn-primary btn-save-task">Save
                 Task</button>
-            <button type="button" class="btn btn-secondary cancel" id="cancel-task-button">Cancel</button>
+            <button type="button" class="btn btn-primary cancel" id="cancel-task-button">Cancel</button>
         </form>
     </div>
     {% endif %}
