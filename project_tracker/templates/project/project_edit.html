@@ -1,4 +1,5 @@
 {% extends "project/dashboard.html" %}
+{% load project_filters %}
 
 {% block title %}Project Edit{% endblock %}
 
@@ -110,7 +111,9 @@
 {% endfor %}
 
 <div class="container">
-    <h3 class="form-title">Details of "{{ project.title }}"</h3>
+    <h3 class="form-title" data-toggle="tooltip" data-placement="top" title="{{ project.title }}">
+        Details of "{{ project.title|truncate_chars:35 }}"
+    </h3>
     {% if is_owner %}
     <button id="edit-button" class="btn btn-primary btn-edit mb-3">Edit</button>
     {% endif %}
@@ -119,12 +122,14 @@
         <div class="form-group">
             <label for="id_title">Title</label>
             {{ form.title }}
-            <small id="title-char-count" class="form-text text-muted" style="display: none;">255 characters remaining</small>
+            <small id="title-char-count" class="form-text text-muted" style="display: none;">255 characters
+                remaining</small>
         </div>
         <div class="form-group">
             <label for="id_description">Description</label>
             {{ form.description }}
-            <small id="description-char-count" class="form-text text-muted" style="display: none;">2048 characters remaining</small>
+            <small id="description-char-count" class="form-text text-muted" style="display: none;">2048 characters
+                remaining</small>
         </div>
         <div class="form-group">
             <label for="id_due_date">Due Date</label>
@@ -336,6 +341,13 @@
         // Initial update
         updateCharCount(titleInput, titleCharCount, 255);
         updateCharCount(descriptionInput, descriptionCharCount, 2048);
+    });
+    // Enable tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
     });
 </script>
 {% endblock %}
