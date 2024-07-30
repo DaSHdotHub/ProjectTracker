@@ -72,16 +72,18 @@
 
 {% block middle_column %}
 <div class="container">
-    <h3 class="form-title">Create new project</h3>
+    <h3 class="form-title">Create Project</h3>
     <form method="post" id="project-form">
         {% csrf_token %}
         <div class="form-group">
             <label for="id_title">Title</label>
             {{ form.title }}
+            <small id="title-char-count" class="form-text text-muted">255 characters remaining</small>
         </div>
         <div class="form-group">
             <label for="id_description">Description</label>
             {{ form.description }}
+            <small id="description-char-count" class="form-text text-muted">2048 characters remaining</small>
         </div>
         <div class="form-group">
             <label for="id_due_date">Due Date</label>
@@ -137,6 +139,46 @@
                 this.value = '';
             }
         });
+    });
+    // Update character count for title and description
+    document.addEventListener('DOMContentLoaded', function () {
+        const titleInput = document.getElementById('id_title');
+        const descriptionInput = document.getElementById('id_description');
+        const titleCharCount = document.getElementById('title-char-count');
+        const descriptionCharCount = document.getElementById('description-char-count');
+
+        function updateCharCount(input, countElement, maxLength) {
+            const remainingChars = maxLength - input.value.length;
+            countElement.textContent = `${remainingChars} characters remaining`;
+
+            if (remainingChars < 0) {
+                countElement.classList.add('text-danger');
+                input.classList.add('is-invalid');
+            } else {
+                countElement.classList.remove('text-danger');
+                input.classList.remove('is-invalid');
+            }
+        }
+
+        function limitChars(input, maxLength) {
+            if (input.value.length > maxLength) {
+                input.value = input.value.substr(0, maxLength);
+            }
+        }
+
+        titleInput.addEventListener('input', function () {
+            updateCharCount(this, titleCharCount, 255);
+            limitChars(this, 255);
+        });
+
+        descriptionInput.addEventListener('input', function () {
+            updateCharCount(this, descriptionCharCount, 2048);
+            limitChars(this, 2048);
+        });
+
+        // Initial update
+        updateCharCount(titleInput, titleCharCount, 255);
+        updateCharCount(descriptionInput, descriptionCharCount, 2048);
     });
 </script>
 {% endblock %}

@@ -102,6 +102,7 @@ def create_project(request):
             project = form.save(commit=False)
             project.owner = request.user
             project.save()
+            messages.success(request, "Project created successfully.")
             return redirect("dashboard")
     else:
         form = ProjectForm()
@@ -122,7 +123,7 @@ def edit_project(request, project_id):
             if form.is_valid():
                 form.save()
                 messages.success(request, "Project updated successfully.")
-                return redirect("project_edit", project_id=project.id)
+                return redirect("edit_project", project_id=project.id)
             messages.error(request, "There was an error updating the project.")
         elif action == "add_task":
             task_form = TaskForm(request.POST)
@@ -131,7 +132,7 @@ def edit_project(request, project_id):
                 new_task.project = project
                 new_task.save()
                 messages.success(request, "Task added successfully.")
-                return redirect("project_edit", project_id=project.id)
+                return redirect("edit_project", project_id=project.id)
             messages.error(request, "There was an error adding the task.")
     else:
         form = ProjectForm(instance=project, edit_mode=True)

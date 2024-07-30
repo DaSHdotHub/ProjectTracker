@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxLengthValidator
 
 
 # Project model with data fields for title, description, creation_date, due_date, state, owner, and is_public
@@ -15,8 +16,10 @@ class Project(models.Model):
         (CANCELLED, "Cancelled"),
     ]
 
-    title = models.CharField(max_length=255)
-    description = models.TextField()
+    title = models.CharField(max_length=255, validators=[MaxLengthValidator(255)])
+    description = models.TextField(
+        max_length=2048, blank=True, null=True, validators=[MaxLengthValidator(2048)]
+    )
     creation_date = models.DateField(auto_now_add=True)
     due_date = models.DateField()
     state = models.CharField(max_length=1, choices=STATUS_CHOICES, default=DRAFT)
