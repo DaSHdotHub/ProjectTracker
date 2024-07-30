@@ -46,6 +46,7 @@ def get_common_context(request):
         "profile": profile,
         "profile_picture_url": profile_picture,
         "dashboard_url": reverse("dashboard"),
+        "public_dashboard_url": reverse("public_dashboard"),
         "signout_url": reverse("signout"),
     }
 
@@ -68,6 +69,28 @@ def dashboard(request):
         }
     )
     return render(request, "project/project_list.html", context)
+
+# View for Dashboard (public list)
+@login_required
+def public_dashboard(request):
+    public_projects = Project.objects.filter(is_public=True)
+    context = get_common_context(request)
+    context.update(
+        {
+            "projects": public_projects,
+            "comments": [
+                {"user": "User 1", "content": "Comment content 1"},
+                {"user": "User 2", "content": "Comment content 2"},
+            ],
+            "in_progress_count": public_projects.filter(
+                state=Project.IN_PROGRESS
+            ).count(),
+            "completed_count": public_projects.filter(state=Project.COMPLETED).count(),
+            "total_count": public_projects.count(),
+        }
+    )
+    return render(request, "project/public_list.html", context)
+
 
 # View for Dashboard (project create)
 @login_required

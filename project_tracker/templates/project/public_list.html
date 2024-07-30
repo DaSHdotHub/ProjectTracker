@@ -1,0 +1,72 @@
+{% extends "project/dashboard.html" %}
+{% block title %}Public Projects{% endblock %}
+{% block middle_column %}
+<div class="project-count">
+    <div>
+        <h2>Public Projects</h2>
+        <p>In Progress: <span id="in-progress-count">{{ in_progress_count }}</span></p>
+        <p>Completed: <span id="completed-count">{{ completed_count }}</span></p>
+        <p>Total: <span id="total-count">{{ total_count }}</span></p>
+    </div>
+    <div class="toggle-switch">
+        <span id="current-date"></span>
+        <div class="custom-control custom-switch ml-3">
+            <input type="checkbox" class="custom-control-input" id="viewSwitch">
+            <label class="custom-control-label" for="viewSwitch">Toggle View</label>
+        </div>
+    </div>
+</div>
+<div id="projects-container" class="project-grid">
+    {% for project in projects %}
+    <div class="project-card">
+        <h5>{{ project.title }}</h5>
+        <p>{{ project.description }}</p>
+        <p>Status: {{ project.get_state_display }}</p>
+        <p>From: {{ project.owner.first_name }}</p>
+    </div>
+    {% endfor %}
+</div>
+<table id="projects-table" class="project-table" style="display: none;">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>From:></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in projects %}
+        <tr>
+            <td>{{ project.title }}</td>
+            <td>{{ project.description }}</td>
+            <td>{{ project.get_state_display }}</td>
+            <td>{{ project.owner.first_name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Display current date
+    const currentDateElement = document.getElementById('current-date');
+    if (currentDateElement) {
+        currentDateElement.textContent = new Date().toLocaleDateString();
+    }
+
+    // Toggle between grid and table view
+    const viewSwitch = document.getElementById('viewSwitch');
+    const projectsContainer = document.getElementById('projects-container');
+    const projectsTable = document.getElementById('projects-table');
+
+    if (viewSwitch && projectsContainer && projectsTable) {
+        viewSwitch.addEventListener('change', function () {
+            const isChecked = this.checked;
+            projectsContainer.style.display = isChecked ? 'none' : 'flex';
+            projectsTable.style.display = isChecked ? 'table' : 'none';
+        });
+    }
+</script>
+{% endblock %}
