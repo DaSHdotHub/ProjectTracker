@@ -1,5 +1,7 @@
 {% extends "project/dashboard.html" %}
 
+{% block title %}Project Edit{% endblock %}
+
 {% block styles %}
 <style>
     .container {
@@ -15,6 +17,7 @@
     .form-group label {
         font-weight: bold;
     }
+
     /* Additional styles to ensure same view on mobile as on desktop */
     .form-group {
         display: flex;
@@ -93,7 +96,6 @@
     .cancel:hover {
         background-color: #b64c00;
     }
-    
 </style>
 {% endblock %}
 
@@ -110,8 +112,6 @@
 <div class="container">
     <h3 class="form-title">Details of "{{ project.title }}"</h3>
     {% if is_owner %}
-    <a id="go-to-dashboard-button" class="btn btn-secondary btn-back nav-link mb-3 cancel" href="{{ dashboard_url }}">Go to
-        Dashboard</a>
     <button id="edit-button" class="btn btn-primary btn-edit mb-3">Edit</button>
     {% endif %}
     <form method="post" id="project-form">
@@ -136,9 +136,10 @@
             <label for="id_is_public">Is Public</label>
             {{ form.is_public }}
         </div>
-        <button type="submit" name="action" value="edit_project" class="btn btn-primary btn-save-change"
+        <button type="submit" name="action" value="project_edit" class="btn btn-primary btn-save-change"
             id="save-button" style="display:none;">Save Changes</button>
-        <button type="button" class="btn btn-secondary cancel" id="cancel-edit-button" style="display:none;">Cancel</button>
+        <button type="button" class="btn btn-secondary cancel" id="cancel-edit-button"
+            style="display:none;">Cancel</button>
     </form>
 
     <h3 class="mt-4" id="task_name">Tasks</h3>
@@ -199,133 +200,93 @@
 
 {% block extra_js %}
 <script>
-    $(document).ready(function () {
-        // Initialize datepickers for project and task due dates
-        $('#id_due_date, #id_task_due_date').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: true
-        });
+    // Initially disable all form fields
+    $('#project-form input, #project-form select, #project-form textarea').prop('disabled', true);
 
-        // Restrict input to numbers only for project and task due dates
-        $('#id_due_date, #id_task_due_date').on('keypress', function (event) {
-            const charCode = event.charCode;
-            if ((charCode >= 48 && charCode <= 57) || charCode === 45) {
-                // Allow numbers (0-9) and '-'
-                return true;
-            } else {
-                // Prevent other characters
-                event.preventDefault();
-                return false;
-            }
-        });
+    // Toggle edit mode
+    $('#edit-button').click(function () {
+        $('#project-form input, #project-form select, #project-form textarea').prop('disabled', false);
+        $('#edit-button').hide();
+        $('.btn-save-change').show();
+        $('#add-task').show();
+        $('#cancel-edit-button').show();
+        $('.task-actions').show();
+    });
 
-        // Limit input to numbers only for project and task due dates
-        $('#id_due_date, #id_task_due_date').on('input', function () {
-            this.value = this.value.replace(/[^0-9\-]/g, '');
-        });
-
-        // Prevent past dates for project and task due dates
-        $('#id_due_date, #id_task_due_date').on('change', function () {
-            const selectedDate = new Date(this.value);
-            const currentDate = new Date();
-            if (selectedDate < currentDate) {
-                alert('Please select a future date');
-                this.value = '';
-            }
-        });
-
-        // Initially disable all form fields
+    // Show task form on 'add task button' click
+    $('#add-task').click(function () {
+        $('#task-form-container').show();
+        $('.btn-save-change').hide();
+        $('#add-task').hide();
         $('#project-form input, #project-form select, #project-form textarea').prop('disabled', true);
+        $('.task-actions').hide();
+        $('#cancel-edit-button').hide();
+        $('#task_name').text('Add New Task');
 
-        // Toggle edit mode
-        $('#edit-button').click(function () {
-            $('#project-form input, #project-form select, #project-form textarea').prop('disabled', false);
-            $('#edit-button').hide();
-            $('#go-to-dashboard-button').hide();
-            $('.btn-save-change').show();
-            $('#add-task').show();
-            $('#cancel-edit-button').show();
-            $('.task-actions').show();
+    });
+
+    // Cancel editing project
+    $('#cancel-edit-button').click(function () {
+        $('#project-form')[0].reset();
+        $('#project-form input, #project-form select, #project-form textarea').prop('disabled', true);
+        $('#edit-button').show();
+        $('.btn-save-change').hide();
+        $('#cancel-edit-button').hide();
+        $('#add-task').hide();
+        $('#task-form-container').hide();
+        $('.task-actions').hide();
+    });
+
+    // Cancel adding task
+    $('#cancel-task-button').click(function () {
+        $('#task-form')[0].reset();
+        $('#task-form-container').hide();
+        $('#edit-button').show();
+        $('#task_name').text('Tasks');
+    });
+
+    // Save adding task
+    $('.btn-save-task').click(function () {
+        $('#task_name').text('Tasks');
+    });
+
+    // Change task status
+    $('.change-status').click(function () {
+        const taskId = $(this).data('task-id');
+        const newStatus = $(this).data('new-status');
+        $.ajax({
+            type: 'POST',
+            url: `{% url 'change_task_status' %}`,
+            data: {
+                'task_id': taskId,
+                'new_status': newStatus,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                alert('There was an error changing the task status.');
+            }
         });
+    });
 
-        // Show task form on 'add task button' click
-        $('#add-task').click(function () {
-            $('#task-form-container').show();
-            $('.btn-save-change').hide();
-            $('#add-task').hide();
-            $('#project-form input, #project-form select, #project-form textarea').prop('disabled', true);
-            $('.task-actions').hide();
-            $('#cancel-edit-button').hide();
-            $('#task_name').text('Add New Task');
-
-        });
-
-        // Cancel editing project
-        $('#cancel-edit-button').click(function () {
-            $('#project-form')[0].reset();
-            $('#project-form input, #project-form select, #project-form textarea').prop('disabled', true);
-            $('#edit-button').show();
-            $('#go-to-dashboard-button').show();
-            $('.btn-save-change').hide();
-            $('#cancel-edit-button').hide();
-            $('#add-task').hide();
-            $('#task-form-container').hide();
-            $('.task-actions').hide();
-        });
-
-        // Cancel adding task
-        $('#cancel-task-button').click(function () {
-            $('#task-form')[0].reset();
-            $('#task-form-container').hide();
-            $('#edit-button').show();
-            $('#task_name').text('Tasks');
-            $('#go-to-dashboard-button').show();
-        });
-
-        // Save adding task
-        $('.btn-save-task').click(function () {
-            $('#task_name').text('Tasks');
-        });
-
-        // Change task status
-        $('.change-status').click(function () {
-            const taskId = $(this).data('task-id');
-            const newStatus = $(this).data('new-status');
-            $.ajax({
-                type: 'POST',
-                url: `{% url 'change_task_status' %}`,
-                data: {
-                    'task_id': taskId,
-                    'new_status': newStatus,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'
-                },
-                success: function () {
-                    location.reload();
-                },
-                error: function () {
-                    alert('There was an error changing the task status.');
-                }
-            });
-        });
-
-        // Delete task
-        $('.delete-task').click(function () {
-            const taskId = $(this).data('task-id');
-            $.ajax({
-                type: 'POST',
-                url: `{% url 'delete_task' %}`,
-                data: {
-                    'task_id': taskId,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'
-                },
-                success: function () {
-                    location.reload();
-                },
-                error: function () {
-                    alert('There was an error deleting the task.');
-                }
-            });
+    // Delete task
+    $('.delete-task').click(function () {
+        const taskId = $(this).data('task-id');
+        $.ajax({
+            type: 'POST',
+            url: `{% url 'delete_task' %}`,
+            data: {
+                'task_id': taskId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                alert('There was an error deleting the task.');
+            }
         });
     });
 </script>
