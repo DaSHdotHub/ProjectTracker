@@ -49,3 +49,20 @@
     </tbody>
 </table>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+    // Display current date
+    const currentDateElement = document.getElementById('current-date');
+    if (currentDateElement) {
+        currentDateElement.textContent = new Date().toLocaleDateString();
+    }
+
+    // Toggle between grid and table view
+    document.getElementById('viewSwitch').addEventListener('change', function () {
+        const isChecked = this.checked;
+        document.getElementById('projects-container').style.display = isChecked ? 'none' : 'flex';
+        document.getElementById('projects-table').style.display = isChecked ? 'table' : 'none';
+    });
+</script>
+{% endblock %}
