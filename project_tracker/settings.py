@@ -10,8 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 import ssl
 import certifi
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from pathlib import Path
 from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,6 +46,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'project',
     'authentication',
+    'profiles',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -80,7 +86,13 @@ WSGI_APPLICATION = 'project_tracker.wsgi.application'
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = BASE_DIR / 'static'
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'project_tracker', 'src', 'images'),
+]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -95,6 +107,14 @@ DATABASES = {
         'PORT': config('DB_PORT', default = '6543')
     }
 }
+
+# Cloudinary configuration
+cloudinary.config( 
+    cloud_name = config('CLOUDINARY_CLOUD_NAME'), 
+    api_key = config('CLOUDINARY_API_KEY'),
+    api_secret = config('CLOUDINARY_API_SECRET'),
+    secure=True
+)
 
 
 # Password validation
