@@ -1,5 +1,7 @@
 {% extends "project/dashboard.html" %}
 
+{% block title %}Project Details{% endblock %}
+
 {% block styles %}
 <style>
     .container {
@@ -97,45 +99,44 @@
         <a class="btn btn-secondary" id="cancel-button" href="{{ dashboard_url }}">Cancel</a>
     </form>
 </div>
-    {% endblock %}
-
-    {% block extra_js %}
-    <script>
-        // Initialize datepicker
-        $(document).ready(function () {
-            $('#id_due_date').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true,
-                todayHighlight: true
-            });
-
-            // Restrict input to numbers only
-            $('#id_due_date').on('keypress', function (event) {
-                const charCode = event.charCode;
-                if ((charCode >= 48 && charCode <= 57) || charCode === 45) {
-                    // Allow numbers (0-9) and '-'
-                    return true;
-                } else {
-                    // Prevent other characters
-                    event.preventDefault();
-                    return false;
-                }
-            });
-
-            // Limit input to numbers only
-            $('id_due_date').on('input', function () {
-                this.value = this.value.replace(/[^0-9\-]/g, '');
-            });
-
-            // Prevent past dates
-            $('#id_due_date').on('change', function () {
-                const selectedDate = new Date(this.value);
-                const currentDate = new Date();
-                if (selectedDate < currentDate) {
-                    alert('Please select a future date');
-                    this.value = '';
-                }
-            });
+{% endblock %}
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        // Initialize datepickers for project and task due dates
+        $('#id_due_date, #id_task_due_date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true
         });
-    </script>
-    {% endblock %}
+
+        // Restrict input to numbers only for project and task due dates
+        $('#id_due_date, #id_task_due_date').on('keypress', function (event) {
+            const charCode = event.charCode;
+            if ((charCode >= 48 && charCode <= 57) || charCode === 45) {
+                // Allow numbers (0-9) and '-'
+                return true;
+            } else {
+                // Prevent other characters
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        // Limit input to numbers only for project and task due dates
+        $('#id_due_date, #id_task_due_date').on('input', function () {
+            this.value = this.value.replace(/[^0-9\-]/g, '');
+        });
+
+        // Prevent past dates for project and task due dates
+        $('#id_due_date, #id_task_due_date').on('change', function () {
+            const selectedDate = new Date(this.value);
+            const currentDate = new Date();
+            if (selectedDate < currentDate) {
+                alert('Please select a future date');
+                this.value = '';
+            }
+        });
+    });
+</script>
+{% endblock %}
