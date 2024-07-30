@@ -10,10 +10,11 @@ from django.utils.html import strip_tags
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from .custom_email_backend import CustomEmailBackend
-
 from project_tracker import settings
 from .tokens import generate_token
+
 # Create your views here.
+
 def home(request):
     return render(request, "authentication/index.html")
 
