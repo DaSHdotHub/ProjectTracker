@@ -32,15 +32,12 @@ def profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile = profile_form.save(commit=False)
-            profile_updated = False
 
-            if "profile_picture" in request.FILES:
-                profile_picture_url = upload_profile_picture(
-                    request.FILES["profile_picture"]
-                )
-                profile.profile_picture = profile_picture_url
-
-            profile.save()
+            if 'profile_picture' in request.FILES:
+                if profile_form.is_valid():
+                    profile_picture_url = upload_profile_picture(request.FILES["profile_picture"])
+                    profile.profile_picture = profile_picture_url
+                    profile.save()
 
             if user_form.cleaned_data.get("password1"):
                 user.set_password(user_form.cleaned_data["password1"])
@@ -49,7 +46,6 @@ def profile(request):
 
             messages.success(request, "Your profile was successfully updated!")
             # Set a session variable to flag that the profile was updated
-            profile_updated = True
             request.session["profile_updated"] = True
             return redirect("profile")
         else:

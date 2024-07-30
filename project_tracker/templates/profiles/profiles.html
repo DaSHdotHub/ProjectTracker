@@ -92,7 +92,7 @@
         </div>
         <form method="post" enctype="multipart/form-data" id="profileForm">
             {% csrf_token %}
-            <input type="file" id="profilePictureInput" name="profile_picture" style="display: none;">
+            <input type="file" id="profilePictureInput" name="profile_picture" style="display: none;" accept="image/*">
             <div class="form-group">
                 <label for="first_name">First Name</label>
                 {{ user_form.first_name }}
@@ -161,8 +161,30 @@
                     }
                 }
 
-                // If everything is valid, submit the form
-                this.submit();
+                // Create a FormData object
+                var formData = new FormData(this);
+
+                // Remove profile_picture key from form if no file is selected
+                if (!$('#profilePictureInput')[0].files.length) {
+                    formData.delete('profile_picture');
+                }
+
+                // Submit the form using AJAX
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        // Reload the page or update the necessary parts
+                        window.location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        // Handle error (e.g., display error messages)
+                    }
+                });
             });
 
             // Make email field readonly
