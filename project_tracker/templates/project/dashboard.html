@@ -11,6 +11,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
         rel="stylesheet">
     <style>
+        /* Root variables for consistent color scheme */
         :root {
             --deep-navy: #292f56;
             --plum-purple: #844273;
@@ -19,28 +20,59 @@
             --lime-green: #acfa70;
             --pure-white: #ffffff;
             --pure-black: #000000;
-
         }
 
+        /* Basic page structure */
         html,
         body {
             height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             display: flex;
             flex-direction: column;
+            background-color: var(--deep-navy);
+            color: var(--pure-white);
+            min-height: 100vh;
+            /* Ensure body takes at least full viewport height */
         }
 
-
-        body {
-            background-color: var(--deep-navy);
-            color: var(--white);
+        /* Main content area */
+        .container-fluid {
+            flex: 1 0 auto;
+            /* Allow container to grow and push footer to bottom */
         }
 
         .content-area {
             height: 100%;
             overflow-y: auto;
+        }
+
+        /* Common styles for cards and columns */
+        .column,
+        .project-card,
+        .comment-card,
+        .profile-pic-container {
+            border-radius: 15px;
+            background-color: var(--plum-purple);
+            box-shadow: 0 4px 8px var(--deep-navy);
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        /* Project card specific styles */
+        .project-card {
+            flex: 0 0 30%;
+            margin: 1%;
+            padding: 15px;
+            background-color: var(--coral-pink);
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
         }
 
         .project-card a {
@@ -59,24 +91,7 @@
             margin-bottom: 0;
         }
 
-        .text-muted {
-            color: var(--lime-green) !;
-        }
-
-        .column,
-        .project-card,
-        .comment-card,
-        .profile-pic-container {
-            border-radius: 15px;
-            background-color: var(--plum-purple);
-            box-shadow: 0 4px 8px var(--deep-navy);
-            padding: 20px;
-        }
-
-        .column {
-            margin: 10px 0;
-        }
-
+        /* Profile picture styles */
         .profile-pic,
         .profile-picture {
             width: 80px;
@@ -84,9 +99,6 @@
             border-radius: 50%;
             object-fit: cover;
             cursor: pointer;
-        }
-
-        .profile-pic {
             transition: opacity 0.3s ease;
         }
 
@@ -94,47 +106,36 @@
             opacity: 0.8;
         }
 
+        /* Icon styles */
         .icon,
         .create-project-icon {
             cursor: pointer;
             color: var(--lime-green);
-        }
-
-        .icon {
             font-size: 1.5rem;
             margin: 15px 0;
         }
 
         .create-project-icon {
-            position: relative;
             font-size: 2rem;
             margin-right: 15px;
         }
 
+        /* Project count and toggle switch */
         .project-count,
         .toggle-switch {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: var(--white);
+            color: var(--pure-white);
         }
 
+        /* Project grid layout */
         .project-grid {
             display: flex;
             flex-wrap: wrap;
         }
 
-        .project-card {
-            flex: 0 0 30%;
-            margin: 1%;
-            padding: 15px;
-            background-color: var(--coral-pink);
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-        }
-
+        /* Project table styles */
         .project-table {
             width: 100%;
             border-collapse: collapse;
@@ -148,29 +149,26 @@
 
         .project-table th {
             background-color: var(--coral-pink);
-            color: var(--white);
+            color: var(--pure-white);
         }
 
         .project-table td {
             background-color: var(--plum-purple);
         }
 
+        /* Comments section */
         .comments-section {
             max-height: 400px;
             overflow-y: auto;
         }
 
-        .comment-card {
-            padding: 10px;
-            background-color: var(--coral-pink);
-            margin-bottom: 10px;
-        }
-
+        /* Close button styles */
         .close {
             color: var(--lime-green);
             float: right;
             font-size: 28px;
             font-weight: bold;
+            transition: color 0.3s ease;
         }
 
         .close:hover,
@@ -180,10 +178,12 @@
             cursor: pointer;
         }
 
+        /* Top row layout */
         .top-row {
             padding-top: 20px;
         }
 
+        /* Profile section layout */
         .profile-section {
             display: flex;
             align-items: center;
@@ -206,12 +206,14 @@
             color: var(--pure-white);
         }
 
+        /* Button wrapper */
         .btn-wrapper {
             display: flex;
             justify-content: flex-end;
             align-items: center;
         }
 
+        /* Navigation styles */
         .nav-wrapper {
             position: relative;
         }
@@ -259,9 +261,8 @@
         .navbar-nav {
             padding: 0.25rem;
             top: -50px;
-            background-color: #ffffff;
-            border-radius: 15px;
             background-color: var(--pure-white);
+            border-radius: 15px;
         }
 
         .nav-item {
@@ -289,6 +290,7 @@
             background-color: var(--deep-navy);
         }
 
+        /* Button styles */
         .btn {
             box-shadow: 0 4px 8px var(--deep-navy);
             margin-bottom: 5px;
@@ -314,14 +316,15 @@
             border-color: var(--coral-pink);
         }
 
-        /*Outer footer styling*/
+        /* Footer styles */
         footer {
-            height: fit-content;
+            flex-shrink: 0;
+            /* Prevent footer from shrinking */
             width: 100%;
-            color: var(--footer-text-color);
+            color: var(--pure-white);
+            background-color: var(--deep-navy);
         }
 
-        /*Inner footer styling*/
         footer>div {
             font-family: var(--font-for-header-footer);
             text-align: center;
@@ -334,7 +337,7 @@
             padding: 15px 5%;
         }
 
-        /* The icons container */
+        /* Footer icons container */
         .icons {
             display: flex;
             flex-direction: row;
@@ -343,18 +346,18 @@
             padding: 0 20px;
         }
 
-        /* Regular state - Icon size */
+        /* Footer icon styles */
         .icon {
             color: var(--golden-amber);
             transition: transform 0.3s ease;
             margin: 10px;
         }
 
-        /* Hover state - Icon enlarged */
         .icon:hover {
             transform: scale(1.5);
         }
 
+        /* Media queries for responsive design */
         @media (min-width: 768px) {
             .navbar-collapse {
                 position: static;
