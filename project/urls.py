@@ -6,6 +6,7 @@ from .views import (
     create_project,
     edit_project,
     change_task_status,
+    delete_project,
     delete_task,
     ProjectViewSet,
     TaskViewSet,
@@ -25,5 +26,6 @@ urlpatterns = [
     path("edit-project/<int:project_id>/", edit_project, name="edit_project"),
     path("change-task-status/", change_task_status, name="change_task_status"),
     path("delete-task/", delete_task, name="delete_task"),
+    path('project/delete/', delete_project, name='delete_project'),
     path("api/", include(router.urls)),
 ]

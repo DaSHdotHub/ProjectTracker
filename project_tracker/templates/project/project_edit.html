@@ -190,6 +190,12 @@
         {% endfor %}
     </div>
     {% endif %}
+    <div class="mt-5">
+        <button type="button" id="delete-project-btn" class="btn  btn-primary" style="display: none;">Delete
+            Project</button>
+        <button type="button" id="confirm-delete-btn" class="btn  btn-primary" style="display: none;">I'm sure I want to
+            delete this project</button>
+    </div>
 </div>
 {% endblock %}
 
@@ -208,6 +214,8 @@
         $('.task-actions').show();
         $('#title-char-count').show();
         $('#description-char-count').show();
+        $('#delete-project-btn').show();
+
 
     });
 
@@ -235,6 +243,7 @@
         $('.task-actions').hide();
         $('#title-char-count').hide();
         $('#description-char-count').hide();
+        $('#delete-project-btn').hide();
     });
 
     // Cancel adding task
@@ -331,11 +340,54 @@
         updateCharCount(descriptionInput, descriptionCharCount, 2048);
     });
     // Enable tooltips
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
+    });
+    // Project deletion confirmation
+    $(document).ready(function () {
+        const deleteBtn = $('#delete-project-btn');
+        const confirmDeleteBtn = $('#confirm-delete-btn');
+
+        deleteBtn.click(function () {
+            $(this).hide();
+            confirmDeleteBtn.show();
+
+            // Set a timeout to reset the buttons if not confirmed
+            setTimeout(function () {
+                confirmDeleteBtn.hide();
+                deleteBtn.show();
+            }, 5000);  // Reset after 5 seconds
+        });
+
+        confirmDeleteBtn.click(function () {
+            if (confirm("Are you absolutely sure you want to delete this project? This action cannot be undone.")) {
+                // Send AJAX request to delete the project
+                $.ajax({
+                    url: '{% url "delete_project" %}',
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        project_id: '{{ project.id }}' 
+                    },
+                    success: function (response) {
+                        // Redirect to dashboard on success
+                        window.location.href = '{% url "dashboard" %}';
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors
+                        alert("An error occurred while deleting the project. Please try again.");
+                        console.error(error);
+                    }
+                });
+            } else {
+                // If user cancels, reset the buttons
+                confirmDeleteBtn.hide();
+                deleteBtn.show();
+            }
+        });
     });
 </script>
 {% endblock %}

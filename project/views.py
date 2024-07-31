@@ -162,6 +162,14 @@ def change_task_status(request):
         task.save()
         return JsonResponse({"success": True})
 
+@login_required    
+def delete_project(request):
+    if request.method == "POST":
+        project_id = request.POST.get('project_id')
+        project = get_object_or_404(Project, id=project_id, owner=request.user)
+        project.delete()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 @login_required
 @csrf_exempt
