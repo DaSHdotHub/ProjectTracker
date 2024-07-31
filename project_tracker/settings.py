@@ -88,6 +88,7 @@ STATIC_ROOT = BASE_DIR / 'static'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'project_tracker', 'src', 'images'),
+    os.path.join(BASE_DIR, 'project_tracker', 'src', 'favicon'),
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
