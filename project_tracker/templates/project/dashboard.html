@@ -64,7 +64,7 @@
 
     /* Project card specific styles */
     .project-card {
-        flex: 0 0 30%;
+        flex: 0 0 calc(33.333% - 2%);
         margin: 1%;
         padding: 15px;
         background-color: var(--coral-pink);
@@ -344,6 +344,12 @@
         }
     }
 
+    @media (max-width: 800px) {
+        .project-card {
+            flex: 0 0 calc(50% - 2%);
+        }
+    }
+
     @media (max-width: 767px) {
         .navbar-collapse:not(.show) {
             display: none;
@@ -362,6 +368,12 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: nowrap;
+        }
+    }
+
+    @media (max-width: 579px) {
+        .project-card {
+            flex: 0 0 calc(100% - 2%);
         }
     }
 </style>
