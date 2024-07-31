@@ -1,292 +1,226 @@
+{% extends 'base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProjectTracker Home</title>
-    <!--Montserrat + Roboto font-->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;700&display=swap"
-        rel="stylesheet">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Color palette */
-        :root {
-            --deep-navy: #292f56;
-            --plum-purple: #844273;
-            --coral-pink: #cf6364;
-            --golden-amber: #e2a946;
-            --lime-green: #acfa70;
-            --pure-white: #ffffff;
-            --pure-black: #000000;
+{% block title %}Index {% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Custom styles body */
+    body {
+        background-color: var(--deep-navy);
+        color: var(--pure-white);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .navbar-brand {
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .container {
+        flex: 1 0 auto;
+    }
+
+    /* Custom styles for navbar */
+    .navbar {
+        background-color: var(--deep-navy) !important;
+    }
+
+    .navbar-brand,
+    .nav-link {
+        color: var(--pure-white) !important;
+    }
+
+    .btn-primary {
+        background-color: var(--coral-pink);
+        border-color: var(--coral-pink);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--golden-amber);
+        border-color: var(--golden-amber);
+    }
+
+    /* Custom styles for cards */
+    .card {
+        background-color: var(--plum-purple);
+        border: none;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        color: var(--golden-amber);
+    }
+
+    /* Custom styles for central image */
+    .central-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Custom styles for smaller screens */
+    @media (max-width: 768px) {
+        .row {
+            margin-left: 0;
+            margin-right: 0;
         }
 
-        /* Custom styles body */
-        body {
-            background-color: var(--deep-navy);
-            color: var(--pure-white);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        .navbar-brand {
-            font-family: 'Montserrat', sans-serif;
+        .col-md-4 {
+            margin-bottom: 10px;
         }
 
         .container {
-            flex: 1 0 auto;
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
-        /* Custom styles for navbar */
-        .navbar {
-            background-color: var(--deep-navy) !important;
-        }
-
-        .navbar-brand,
-        .nav-link {
-            color: var(--pure-white) !important;
-        }
-
-        .btn-primary {
-            background-color: var(--coral-pink);
-            border-color: var(--coral-pink);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--golden-amber);
-            border-color: var(--golden-amber);
-        }
-
-        /* Custom styles for cards */
-        .card {
-            background-color: var(--plum-purple);
-            border: none;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
-            height: 100%;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-title {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            color: var(--golden-amber);
-        }
-
-        /* Custom styles for central image */
         .central-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            margin: 10px 0;
         }
+    }
+</style>
 
-        /* Custom styles for footer */
-        footer {
-            background-color: var(--deep-navy);
-            color: var(--pure-white);
-            padding: 20px 0;
-            margin-top: auto;
-            flex-shrink: 0;
-        }
+{% endblock %}
 
-        .icon {
-            color: var(--golden-amber);
-            transition: transform 0.3s ease;
-            margin: 10px;
-        }
+{% block content %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="/">ProjectTracker</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="/signout">Sign Out</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="/signup">Sign Up</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/signin">Sign In</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+<!-- Main content -->
+<div class="container mt-5">
+    {% if user.is_authenticated %}
+    <h3 class="text-center mb-4">Hello {{ username }}! Welcome to ProjectTracker!</h3>
+    <div class="text-center mb-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to Dashboard</a>
+    </div>
+    {% else %}
+    <h3 class="text-center mb-4">Welcome to ProjectTracker!</h3>
+    {% endif %}
 
-        .icon:hover {
-            transform: scale(1.5);
-        }
-
-        /* Custom styles for smaller screens */
-        @media (max-width: 768px) {
-            .row {
-                margin-left: 0;
-                margin-right: 0;
-            }
-
-            .col-md-4 {
-                margin-bottom: 10px;
-            }
-
-            .container {
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-
-            .central-image {
-                margin: 10px 0;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="/">ProjectTracker</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/signout">Sign Out</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/signup">Sign Up</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/signin">Sign In</a>
-                </li>
-                {% endif %}
-            </ul>
-        </div>
-    </nav>
-    <!-- Main content -->
-    <div class="container mt-5">
-        {% if user.is_authenticated %}
-        <h3 class="text-center mb-4">Hello {{ username }}! Welcome to ProjectTracker!</h3>
-        <div class="text-center mb-4">
-            <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to Dashboard</a>
-        </div>
-        {% else %}
-        <h3 class="text-center mb-4">Welcome to ProjectTracker!</h3>
-        {% endif %}
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Recipe Management</h5>
-                        <p class="card-text">Organize your culinary adventures by tracking new recipes, ingredients, and
-                            cooking techniques.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Job Search Tracker</h5>
-                        <p class="card-text">Keep tabs on job applications, interview dates, and follow-ups all in one
-                            place.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">To-Do List Manager</h5>
-                        <p class="card-text">Transform your daily tasks into manageable projects and track your
-                            productivity.</p>
-                    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Recipe Management</h5>
+                    <p class="card-text">Organize your culinary adventures by tracking new recipes, ingredients, and
+                        cooking techniques.</p>
                 </div>
             </div>
         </div>
-
-        <div class="row mt-4">
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Collaborative Projects</h5>
-                        <p class="card-text">Share your public projects and gain insights from others' comments and
-                            suggestions.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 text-center">
-                <img src="{% static 'task.webp' %}" alt="Project Tracker" class="central-image">
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Task Breakdown</h5>
-                        <p class="card-text">Break down complex projects into smaller, manageable tasks for better
-                            organization.</p>
-                    </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Job Search Tracker</h5>
+                    <p class="card-text">Keep tabs on job applications, interview dates, and follow-ups all in one
+                        place.</p>
                 </div>
             </div>
         </div>
-
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Progress Tracking</h5>
-                        <p class="card-text">Visualize your project progress with charts and graphs, helping you stay
-                            motivated and on schedule.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Deadline Management</h5>
-                        <p class="card-text">Set and track deadlines for your projects and tasks, ensuring timely
-                            completion of your goals.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Resource Allocation</h5>
-                        <p class="card-text">Efficiently manage and allocate resources across your projects, optimizing
-                            your productivity.</p>
-                    </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">To-Do List Manager</h5>
+                    <p class="card-text">Transform your daily tasks into manageable projects and track your
+                        productivity.</p>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Footer -->
-    <footer class="mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p>Daniil Shaulov © 2024</p>
-                    <div>
-                        <a href="https://linkedin.com/in/daniil-shaulov-87b5b2198" target="_blank" rel="noopener"
-                            aria-label="Visit my profile on LinkedIn (opens in a new tab)">
-                            <i class="icon fab fa-linkedin fa-2x"></i>
-                        </a>
-                        <a href="https://github.com/DaSHdotHub?tab=repositories" target="_blank" rel="noopener"
-                            aria-label="Visit my GitHub page (opens in a new tab)">
-                            <i class="icon fab fa-github fa-2x"></i>
-                        </a>
-                        <a href="https://xing.com/profile/Daniil_Shaulov/" target="_blank" rel="noopener"
-                            aria-label="Visit my profile on Xing (opens in a new tab)">
-                            <i class="icon fab fa-xing fa-2x"></i>
-                        </a>
-                    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Collaborative Projects</h5>
+                    <p class="card-text">Share your public projects and gain insights from others' comments and
+                        suggestions.</p>
                 </div>
             </div>
         </div>
-    </footer>
+        <div class="col-md-6 text-center">
+            <img src="{% static 'task.webp' %}" alt="Project Tracker" class="central-image">
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Task Breakdown</h5>
+                    <p class="card-text">Break down complex projects into smaller, manageable tasks for better
+                        organization.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script src="https://kit.fontawesome.com/8553d96c4f.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Progress Tracking</h5>
+                    <p class="card-text">Visualize your project progress with charts and graphs, helping you stay
+                        motivated and on schedule.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Deadline Management</h5>
+                    <p class="card-text">Set and track deadlines for your projects and tasks, ensuring timely
+                        completion of your goals.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Resource Allocation</h5>
+                    <p class="card-text">Efficiently manage and allocate resources across your projects, optimizing
+                        your productivity.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
