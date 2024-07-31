@@ -493,21 +493,19 @@
                     greeting = 'Good Night, ';
                 }
 
-                greetingElement.textContent = greeting;;
+                greetingElement.textContent = greeting;
             }
 
-        }
+        };
 
-        // Initialize datepicker
-        $(document).ready(function () {
-            $('#id_due_date').datepicker({
+        function initializeDatepicker(element) {
+            $(element).datepicker({
                 format: 'yyyy-mm-dd',
                 autoclose: true,
                 todayHighlight: true
             });
 
-            // Restrict input to numbers only
-            $('#id_due_date').on('keypress', function (event) {
+            $(element).on('keypress', function (event) {
                 const charCode = event.charCode;
                 if ((charCode >= 48 && charCode <= 57) || charCode === 45) {
                     // Allow numbers (0-9) and '-'
@@ -519,19 +517,32 @@
                 }
             });
 
-            // Limit input to numbers only
-            $('id_due_date').on('input', function () {
+            $(element).on('input', function () {
                 this.value = this.value.replace(/[^0-9\-]/g, '');
             });
 
-            // Prevent past dates
-            $('#id_due_date').on('change', function () {
+            $(element).on('change', function () {
                 const selectedDate = new Date(this.value);
                 const currentDate = new Date();
                 if (selectedDate < currentDate) {
                     alert('Please select a future date');
                     this.value = '';
                 }
+            });
+        }
+
+        $(document).ready(function () {
+            // Initialize datepicker for project due date
+            initializeDatepicker('#id_due_date');
+
+            // Initialize datepicker for task due date
+            initializeDatepicker('#task_id_due_date');
+
+            // Re-initialize datepicker when the add task form is shown
+            $('#add-task').on('click', function () {
+                setTimeout(function () {
+                    initializeDatepicker('#task_id_due_date');
+                }, 100);
             });
         });
 

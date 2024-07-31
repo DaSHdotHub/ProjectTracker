@@ -121,7 +121,7 @@
         </div>
         <div class="form-group">
             <label for="id_due_date">Due Date</label>
-            {{ form.due_date }}
+            {{ form.due_date|attr:"id:id_due_date" }}
         </div>
         <div class="form-group">
             <label for="id_state">State</label>
@@ -144,19 +144,19 @@
         <form method="post" id="task-form">
             {% csrf_token %}
             <div class="form-group">
-                <label for="id_title">Title</label>
+                <label for="task_id_title">Title</label>
                 {{ task_form.title }}
             </div>
             <div class="form-group">
-                <label for="id_description">Description</label>
+                <label for="task_id_description">Description</label>
                 {{ task_form.description }}
             </div>
             <div class="form-group">
-                <label for="id_due_date">Due Date</label>
-                {{ task_form.due_date }}
+                <label for="task_id_due_date">Due Date</label>
+                {{ task_form.due_date|attr:"id:task_id_due_date" }}
             </div>
             <div class="form-group">
-                <label for="id-state">State</label>
+                <label for="task_id_state">State</label>
                 {{ task_form.status }}
             </div>
             <button type="submit" name="action" value="add_task" class="btn btn-primary btn-save-task">Save
