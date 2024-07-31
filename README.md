@@ -476,9 +476,14 @@ Responsiveness
 
 ## Credits
 
+[Django Documentation](https://docs.djangoproject.com/en/5.0/)
+[Bootstrap 4.5 Documentation](https://getbootstrap.com/docs/4.5/getting-started/introduction/)
+[Bootstrap Datepicker](https://bootstrap-datepicker.readthedocs.io/en/latest/)
+[MDN Mozilla Django Web Framework](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django)
+
 ### **Inspirations**
 
----
+[GeeksForGeeks Task Management](https://www.geeksforgeeks.org/create-task-management-system-using-django/)
 
 ### **Resources**
 
