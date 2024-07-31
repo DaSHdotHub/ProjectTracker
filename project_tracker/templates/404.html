@@ -1,15 +1,83 @@
-{% extends "base.html" %}
-
-{% block title %}Page Not Found{% endblock %}
-
+{% extends 'base.html' %}
+{% block title %}404 - Page Not Found{% endblock %}
+{% block extra_head %}
+<style>
+body {
+    background-color: var(--deep-navy);
+    color: var(--pure-white);
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.navbar {
+    background-color: var(--deep-navy) !important;
+}
+.navbar-brand {
+    color: var(--pure-white) !important;
+    font-family: 'Montserrat', sans-serif;
+}
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.error-title {
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--golden-amber);
+}
+.error-message {
+    text-align: center;
+    color: var(--pure-white);
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+.btn-primary {
+    background-color: var(--coral-pink);
+    border-color: var(--coral-pink);
+    border-radius: 10px;
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+.btn-primary:hover {
+    background-color: var(--golden-amber);
+    border-color: var(--golden-amber);
+}
+footer {
+    background-color: var(--deep-navy);
+    color: var(--pure-white);
+    padding: 20px 0;
+    text-align: center;
+}
+.icon {
+    color: var(--golden-amber);
+    transition: transform 0.3s ease;
+    margin: 10px;
+}
+.icon:hover {
+    transform: scale(1.5);
+}
+@media (max-width: 768px) {
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+</style>
+{% endblock %}
 {% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="/">ProjectTracker</a>
+</nav>
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h1 class="mt-5">404 - Page Not Found</h1>
-            <p class="lead">We're sorry, but the page you're looking for doesn't exist or you don't have permission to view it.</p>
-            <a href="/" class="btn btn-primary mt-3">Return to Landing Page</a>
-        </div>
-    </div>
+    <h3 class="error-title">404 - Page Not Found</h3>
+    <p class="error-message">Oops! The page you're looking for doesn't exist.</p>
+    <a href="/" class="btn btn-primary">Go to Homepage</a>
 </div>
 {% endblock %}
