@@ -439,7 +439,6 @@ Automated tests were out of scope for this project.
 [View full report](docs/html/lighthouse_signup_mobile.html)
 </details>
 
-Almost perfect score:
 <br>
 
 #### **Desktop**
@@ -447,31 +446,19 @@ Almost perfect score:
 
 ### Validator Testing
 
-There are three validators that were used to analyse the code.
-
 #### **HTML - W3C - Markup Validation Service**
+* Landing Page, SignIn, SignUp
+    
+        No Errors found, trailing slashes from special tags like '<meta>' were removed for not having any 'INFO' messages in the validator.
 
-No Errors found, trailing slashes from special tags like '<meta>' were removed for not having any 'INFO' messages in the validator.
-<details>
-<summary>Validation result:</summary>
-<img src="assets/media/doc/validator/w3c_html_result.webp" alt="HTML Validation result">
-</details>
 
 #### **CSS - W3C - CSS Validation Service**
 
-No Errors found, warnings were displayed. Imported Fonts could not be checked. CSS variables are currently not statically checked.
-<details>
-<summary>Validation result:</summary>
-<img src="assets/media/doc/validator/w3c_css_result.webp" alt="CSS Validation result">
-</details>
+* Landing Page
+    No Errors found, warnings were displayed. Imported Fonts could not be       checked. CSS variables are currently not statically checked.
 
-#### **JS Validation**
 
-No Errors found, two warnings. Async functions are only available with jshint from ES8
-<details>
-<summary>Validation result:</summary>
-<img src="assets/media/doc/validator/jshint_result.webp" alt="JS Validation result">
-</details>
+
 
 ### Browser Compatibility
 
