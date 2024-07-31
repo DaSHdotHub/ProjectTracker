@@ -1,196 +1,251 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <!-- Include Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <!-- Custom CSS -->
-    <style>
-        body {
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
+{% block title %}Your Profile - ProjectTracker{% endblock %}
 
+{% block extra_head %}
+<style>
+    /* Custom styles for the body*/
+    body {
+        background-color: var(--deep-navy);
+        color: var(--pure-white);
+        font-family: 'Roboto', sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    /* Custom styles for the navbar */
+    .navbar {
+        background-color: var(--deep-navy) !important;
+    }
+
+    .navbar-brand {
+        color: var(--pure-white) !important;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Custom styles for the container */
+    .container {
+        max-width: 400px;
+        margin: 0 auto;
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    /* Custom styles for the form */
+    .form-title {
+        font-family: 'Montserrat', sans-serif;
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--golden-amber);
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: var(--lime-green);
+    }
+
+    .form-control {
+        background-color: var(--plum-purple);
+        border: none;
+        border-radius: 10px;
+        color: var(--pure-white);
+    }
+
+    .form-control:focus {
+        background-color: var(--plum-purple);
+        box-shadow: 0 0 0 0.2rem rgba(206, 212, 218, 0.25);
+        color: var(--pure-white);
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-primary {
+        background-color: var(--coral-pink);
+        border-color: var(--coral-pink);
+        border-radius: 10px;
+        width: 100%;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--golden-amber);
+        border-color: var(--golden-amber);
+    }
+
+    /* Custom styles for the alert messages */
+    .alert {
+        background-color: var(--plum-purple);
+        color: var(--pure-white);
+        border: none;
+    }
+
+    /* Profile picture styles */
+    .profile-picture {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+        margin: 0 auto 20px;
+        display: block;
+    }
+
+    /* Additional button styles */
+    .btn-secondary,
+    .btn-danger {
+        border-radius: 10px;
+        width: 100%;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    .btn-secondary {
+        background-color: var(--plum-purple);
+        border-color: var(--plum-purple);
+    }
+
+    .btn-secondary:hover {
+        background-color: var(--coral-pink);
+        border-color: var(--coral-pink);
+    }
+
+    /* Additional styles to ensure same view on mobile as on desktop */
+    @media (max-width: 768px) {
         .container {
-            max-width: 600px;
-            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
         }
+    }
+</style>
+{% endblock %}
 
-        .form-title {
-            margin-bottom: 30px;
-        }
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="/">ProjectTracker</a>
+</nav>
 
-        .form-group label {
-            font-weight: bold;
-            display: block;
-        }
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    <strong>Message:</strong> {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %}
 
-        .form-group input,
-        .form-group textarea {
-            border-radius: 10px;
-            width: 100%;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            box-shadow: none;
-        }
-
-        .btn {
-            border-radius: 10px;
-            width: 100%;
-        }
-
-        .profile-picture {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .profile-header h3 {
-            margin-left: 20px;
-            margin-bottom: 0;
-        }
-
-        .btn-secondary {
-            background-color: #f26500;
-        }
-
-        .btn-secondary:hover {
-            background-color: #b64c00;
-        }
-    </style>
-</head>
-
-<body>
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        <strong>Message:</strong> {{ message }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endfor %}
-    <div class="container">
-        <div class="profile-header">
-            <img src="{% if profile_picture_url %}{{ profile_picture_url }}{% else %}{% static 'avatar.webp' %}{% endif %}"
-                alt="Profile Picture" class="profile-picture" id="profilePicture">
-            <h3 class="form-title">Your Profile</h3>
+<div class="container">
+    <img src="{% if profile_picture_url %}{{ profile_picture_url }}{% else %}{% static 'avatar.webp' %}{% endif %}"
+        alt="Profile Picture" class="profile-picture" id="profilePicture">
+    <h3 class="form-title">Your Profile</h3>
+    <form method="post" enctype="multipart/form-data" id="profileForm">
+        {% csrf_token %}
+        <input type="file" id="profilePictureInput" name="profile_picture" style="display: none;" accept="image/*">
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" class="form-control" id="first_name" name="first_name"
+                value="{{ user_form.first_name.value }}" required>
         </div>
-        <form method="post" enctype="multipart/form-data" id="profileForm">
-            {% csrf_token %}
-            <input type="file" id="profilePictureInput" name="profile_picture" style="display: none;" accept="image/*">
-            <div class="form-group">
-                <label for="first_name">First Name</label>
-                {{ user_form.first_name }}
-            </div>
-            <div class="form-group">
-                <label for="last_name">Last Name</label>
-                {{ user_form.last_name }}
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                {{ user_form.email }}
-            </div>
-            <div class="form-group">
-                <label for="password1">New Password</label>
-                {{ user_form.password1 }}
-                <small class="text-danger" id="password1-error"></small>
-            </div>
-            <div class="form-group">
-                <label for="password2">Confirm New Password</label>
-                {{ user_form.password2 }}
-                <small class="text-danger" id="password2-error"></small>
-            </div>
-            <button type="submit" class="btn btn-primary save-button">Update Profile</button>
-        </form>
-        {% if show_dashboard_button %}
-        <a type="button" class="btn btn-secondary" href="{% url 'dashboard' %}" style="margin-top: 20px;">Go to
-            Dashboard</a>
-        {% endif %}
-        <form method="post" action="{% url 'delete_account' %}" style="margin-top: 20px;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Delete Account</button>
-        </form>
-    </div>
-    <!-- Include Bootstrap JS and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#profilePicture').click(function () {
-                $('#profilePictureInput').click();
-            });
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" class="form-control" id="last_name" name="last_name"
+                value="{{ user_form.last_name.value }}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ user_form.email.value }}"
+                readonly>
+        </div>
+        <div class="form-group">
+            <label for="password1">New Password</label>
+            <input type="password" class="form-control" id="password1" name="password1" placeholder="New Password">
+            <small class="text-danger" id="password1-error"></small>
+        </div>
+        <div class="form-group">
+            <label for="password2">Confirm New Password</label>
+            <input type="password" class="form-control" id="password2" name="password2"
+                placeholder="Confirm New Password">
+            <small class="text-danger" id="password2-error"></small>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+    {% if show_dashboard_button %}
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Go to Dashboard</a>
+    {% endif %}
+    <form method="post" action="{% url 'delete_account' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete Account</button>
+    </form>
+</div>
+{% endblock %}
 
-            $('#profilePictureInput').change(function () {
-                if (this.files && this.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $('#profilePicture').attr('src', e.target.result);
-                    }
-                    reader.readAsDataURL(this.files[0]);
-                }
-            });
+{% block extra_body %}
+<script>
 
-            $('#profileForm').submit(function (e) {
-                e.preventDefault();
-
-                // Clear previous error messages
-                $('#password1-error, #password2-error').text('');
-
-                var password1 = $('input[name="password1"]').val();
-                var password2 = $('input[name="password2"]').val();
-
-                if (password1 || password2) {
-                    if (password1 !== password2) {
-                        $('#password1-error, #password2-error').text('Passwords do not match');
-                        return false;
-                    }
-                }
-
-                // Create a FormData object
-                var formData = new FormData(this);
-
-                // Remove profile_picture key from form if no file is selected
-                if (!$('#profilePictureInput')[0].files.length) {
-                    formData.delete('profile_picture');
-                }
-
-                // Submit the form using AJAX
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        // Reload the page or update the necessary parts
-                        window.location.reload();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                        // Handle error (e.g., display error messages)
-                    }
-                });
-            });
-
-            // Make email field readonly
-            $('input[name="email"]').attr('readonly', true);
+    $(document).ready(function () {
+        $('#profilePicture').click(function () {
+            $('#profilePictureInput').click();
         });
-    </script>
-</body>
 
-</html>
+        $('#profilePictureInput').change(function () {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#profilePicture').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        $('#profileForm').submit(function (e) {
+            e.preventDefault();
+
+            // Clear any previous error messages
+            $('#password1-error, #password2-error').text('');
+
+            var password1 = $('input[name="password1"]').val();
+            var password2 = $('input[name="password2"]').val();
+
+            if (password1 || password2) {
+                if (password1 !== password2) {
+                    $('#password1-error, #password2-error').text('Passwords do not match');
+                    return false;
+                }
+            }
+
+            // Create a FormData object to store the form data
+            var formData = new FormData(this);
+
+            // Remove the profile_picture key if no file is selected
+            if (!$('#profilePictureInput')[0].files.length) {
+                formData.delete('profile_picture');
+            }
+            // Submit the form using AJAX.
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+
+                    // Reload the page or update the necessary parts
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    // Handle error (e.g., display error messages)
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
