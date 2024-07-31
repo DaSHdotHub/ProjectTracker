@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Meta tags for SEO and social sharing -->
+    <meta name="description" content="ProjectTracker - Manage your projects efficiently">
+    <meta name="keywords" content="project management, task tracking, productivity">
+    <meta name="author" content="Daniil Shaulov">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!--Montserrat + Roboto font-->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;700&display=swap"
+        rel="stylesheet">
+
+    <title>{% block title %}ProjectTracker{% endblock %}</title>
+    <style>
+        /* Color palette */
+        :root {
+        --deep-navy: #292f56;
+        --plum-purple: #844273;
+        --coral-pink: #cf6364;
+        --golden-amber: #e2a946;
+        --lime-green: #acfa70;
+        --pure-white: #ffffff;
+        --pure-black: #000000;
+    }
+        /* Custom styles for the footer */
+        footer {
+            background-color: var(--deep-navy);
+            color: var(--pure-white);
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .icon {
+            color: var(--golden-amber);
+            transition: transform 0.3s ease;
+            margin: 10px;
+        }
+
+        .icon:hover {
+            transform: scale(1.5);
+        }
+    </style>
+
+    <!-- CSS and other head elements go here -->
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    {% block content %}
+    <!-- Main content will go here in child templates -->
+    {% endblock %}
+
+    <footer>
+        <div>
+            <p>Daniil Shaulov © 2024</p>
+            <div>
+                <a href="https://linkedin.com/in/daniil-shaulov-87b5b2198" target="_blank" rel="noopener"
+                    aria-label="Visit my profile on LinkedIn (opens in a new tab)">
+                    <i class="icon fab fa-linkedin fa-2x"></i>
+                </a>
+                <a href="https://github.com/DaSHdotHub?tab=repositories" target="_blank" rel="noopener"
+                    aria-label="Visit my GitHub page (opens in a new tab)">
+                    <i class="icon fab fa-github fa-2x"></i>
+                </a>
+                <a href="https://xing.com/profile/Daniil_Shaulov/" target="_blank" rel="noopener"
+                    aria-label="Visit my profile on Xing (opens in a new tab)">
+                    <i class="icon fab fa-xing fa-2x"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/8553d96c4f.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- JavaScript and other body elements go here -->
+    {% block extra_body %}{% endblock %}
+</body>
+
+
+</html>
