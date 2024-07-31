@@ -1,52 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <!-- Include Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <!-- Custom CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!--Montserrat + Roboto font-->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;700&display=swap"
+        rel="stylesheet">
     <style>
-        body {
-            background-color: #f8f9fa;
-            padding: 20px;
+        /* Color palette */
+        :root {
+            --deep-navy: #292f56;
+            --plum-purple: #844273;
+            --coral-pink: #cf6364;
+            --golden-amber: #e2a946;
+            --lime-green: #acfa70;
+            --pure-white: #ffffff;
+            --pure-black: #000000;
         }
 
+        /* Custom styles for the body*/
+        body {
+            background-color: var(--deep-navy);
+            color: var(--pure-white);
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Custom styles for the navbar */
+        .navbar {
+            background-color: var(--deep-navy) !important;
+        }
+
+        .navbar-brand {
+            color: var(--pure-white) !important;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Custom styles for the container */
         .container {
             max-width: 400px;
             margin: 0 auto;
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
+        /* Custom styles for the form */
         .form-title {
+            font-family: 'Montserrat', sans-serif;
             text-align: center;
             margin-bottom: 30px;
+            color: var(--golden-amber);
         }
 
         .form-group label {
             font-weight: bold;
+            color: var(--lime-green);
         }
 
-        .form-group input {
+        .form-control {
+            background-color: var(--plum-purple);
+            border: none;
             border-radius: 10px;
+            color: var(--pure-white);
         }
 
-        .form-group input:focus {
-            box-shadow: none;
+        .form-control:focus {
+            background-color: var(--plum-purple);
+            box-shadow: 0 0 0 0.2rem rgba(206, 212, 218, 0.25);
+            color: var(--pure-white);
         }
 
-        .form-group input[type="password"] {
-            font-family: "Courier New", Courier, monospace;
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .btn-primary {
+            background-color: var(--coral-pink);
+            border-color: var(--coral-pink);
             border-radius: 10px;
             width: 100%;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--golden-amber);
+            border-color: var(--golden-amber);
+        }
+
+        /* Custom styles for the alert messages */
+        .alert {
+            background-color: var(--plum-purple);
+            color: var(--pure-white);
+            border: none;
+        }
+
+        /* Custom styles for the footer */
+        footer {
+            background-color: var(--deep-navy);
+            color: var(--pure-white);
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .icon {
+            color: var(--golden-amber);
+            transition: transform 0.3s ease;
+            margin: 10px;
+        }
+
+        .icon:hover {
+            transform: scale(1.5);
+        }
+
+        /* Additional styles to ensure same view on mobile as on desktop */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
         }
     </style>
 </head>
+
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="/">ProjectTracker</a>
+    </nav>
     {% for message in messages %}
     <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
         <strong>Message:</strong> {{ message }}
@@ -59,7 +148,6 @@
     <div class="container">
         <h3 class="form-title">Create your account!</h3>
         <form method="post" action="/signup">{% csrf_token %}
-            
             <div class="form-group">
                 <label for="fname">First Name</label>
                 <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name" required>
@@ -78,14 +166,37 @@
             </div>
             <div class="form-group">
                 <label for="pass2">Confirm Password</label>
-                <input type="password" class="form-control" id="pass2" name="pass2" placeholder="Confirm Your Password" required>
+                <input type="password" class="form-control" id="pass2" name="pass2" placeholder="Confirm Your Password"
+                    required>
             </div>
             <button type="submit" class="btn btn-primary">Sign Up</button>
         </form>
     </div>
 
-    <!-- Include Bootstrap JS and jQuery 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>-->
+    <footer>
+        <div>
+            <p>Daniil Shaulov © 2024</p>
+            <div>
+                <a href="https://linkedin.com/in/daniil-shaulov-87b5b2198" target="_blank" rel="noopener"
+                    aria-label="Visit my profile on LinkedIn (opens in a new tab)">
+                    <i class="icon fab fa-linkedin fa-2x"></i>
+                </a>
+                <a href="https://github.com/DaSHdotHub?tab=repositories" target="_blank" rel="noopener"
+                    aria-label="Visit my GitHub page (opens in a new tab)">
+                    <i class="icon fab fa-github fa-2x"></i>
+                </a>
+                <a href="https://xing.com/profile/Daniil_Shaulov/" target="_blank" rel="noopener"
+                    aria-label="Visit my profile on Xing (opens in a new tab)">
+                    <i class="icon fab fa-xing fa-2x"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/8553d96c4f.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
